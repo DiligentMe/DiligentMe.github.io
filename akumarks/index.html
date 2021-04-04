@@ -121,9 +121,20 @@
       }
 
       function generateCode(results){
-        var data = results.data;
-        alert(data);
-      }
+         var data = results.data;
+         data.shift();
+         var allData="";
+         for (i =0 ; i < data.length-1; i++){
+           if(i == 0)
+             allData="[["+data[i]+"],";
+           else if(i==(data.length - 2))
+             allData=allData+"["+data[i]+"]]";
+           else
+             allData =allData+"["+data[i]+"],";
+         }
+         alert(allData);
+       }
+
     });
 </script>
     </body></html >
