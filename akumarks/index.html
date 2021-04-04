@@ -1,7 +1,97 @@
 <!DOCTYPE html>
-<html>
-<body>
-<h1>Hello World</h1>
-<p>I'm hosted with GitHub Pages. Thank You.</p>
-</body>
-</html>
+<!-- saved from url=(0055)http://js-tutorials.com/demos/read_csv_javascript_demo/ -->
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+  <link rel="stylesheet" href="./css/bootstrap.min.css">
+  <script src="./js/osd.js.download"></script>
+  <script src="./js/jquery.min.js.download"></script>
+  <script src="./js/papaparse.min.js.download"></script>
+  <title>js-tutorials.com : Read CSV file using JavaScript and HTML5 </title>
+  <style>
+    .pdfobject-container {
+      height: 500px;
+    }
+
+    .pdfobject {
+      border: 1px solid #666;
+    }
+  </style>
+</head>
+
+<body data-new-gr-c-s-check-loaded="14.1002.0" data-gr-ext-installed="">
+  <div class="container" style="padding: 10px; height: auto !important;">
+    <h1>Read CSV file using JavaScript</h1>
+    <div id="header">
+      <div style="padding-bootom:10px">
+
+      </div>
+    </div>
+    <div class="well">
+      <div class="row">
+        <form class="form-inline">
+          <div class="form-group">
+            <label for="files">Upload a CSV formatted file:</label>
+            <input type="file" id="files" class="form-control" accept=".csv" required="">
+          </div>
+          <div class="form-group">
+            <button type="submit" id="submit-file" class="btn btn-primary">Upload File</button>
+          </div>
+        </form>
+      </div>
+      <div class="row" <div="" id="parsed_csv_list">
+      </div>
+    </div>
+  </div>
+
+
+
+
+
+  <script type="text/javascript">
+    $(document).ready(function() {
+      $('#header').load('../header-ads.html');
+      $('#footer').load('../footer-ads.html');
+
+      $('#submit-file').on("click", function(e) {
+        e.preventDefault();
+        $('#files').parse({
+          config: {
+            delimiter: "auto",
+            complete: displayHTMLTable,
+          },
+          before: function(file, inputElem) {
+            //console.log("Parsing file...", file);
+          },
+          error: function(err, file) {
+            //console.log("ERROR:", err, file);
+          },
+          complete: function() {
+            //console.log("Done with all files");
+          }
+        });
+      });
+
+      function displayHTMLTable(results) {
+        var table = "<table class='table'>";
+        var data = results.data;
+
+        for (i = 0; i < data.length; i++) {
+          table += "<tr>";
+          var row = data[i];
+          var cells = row.join(",").split(",");
+
+          for (j = 0; j < cells.length; j++) {
+            table += "<td>";
+            table += cells[j];
+            table += "</th>";
+          }
+          table += "</tr>";
+        }
+        table += "</table>";
+        $("#parsed_csv_list").html(table);
+      }
+    }); <
+    /body></html >
