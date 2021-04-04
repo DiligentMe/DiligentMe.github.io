@@ -23,7 +23,7 @@
 
 <body data-new-gr-c-s-check-loaded="14.1002.0" data-gr-ext-installed="">
   <div class="container" style="padding: 10px; height: auto !important;">
-    <h1>AKU Internal Marks Auto Fil</h1>
+    <h1>AKU Internal Marks Auto Fill</h1>
     <div id="header">
       <div style="padding-bootom:10px">
 
@@ -33,7 +33,7 @@
       <div class="row">
         <form class="form-inline">
           <div class="form-group">
-            <label for="files">Upload a CSV file of Marks (formatted only)- <a href="./SampleMarksFile.csv">Download Sample from Here</a>:</label>
+            <label for="files">Upload a CSV file of Marks-<a href="./SampleMarksFile.csv">(Click me to Download Sample file)</a>:</label>
             <input type="file" id="files" class="form-control" accept=".csv" required="">
           </div>
           <div class="form-group">
@@ -79,6 +79,27 @@
         });
       });
 
+      $('#generate-code').on("click", function (e) {
+        e.preventDefault();
+        $('#files').parse({
+          config: {
+            delimiter: "auto",
+            complete: generateCode,
+          },
+          before: function(file, inputElem) {
+            //console.log("Parsing file...", file);
+          },
+          error: function(err, file) {
+            //console.log("ERROR:", err, file);
+          },
+          complete: function() {
+            //var T = document.getElementById("submit-file");
+				    //T.style.display = "none";
+            //console.log("Done with all files");
+          }
+        });
+      });
+
       function displayHTMLTable(results) {
         var table = "<table class='table'>";
         var data = results.data;
@@ -97,6 +118,10 @@
         }
         table += "</table>";
         $("#parsed_csv_list").html(table);
+      }
+
+      function generateCode(results){
+        var data = results.data;
       }
     });
 </script>
