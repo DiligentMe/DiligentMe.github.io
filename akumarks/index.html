@@ -122,7 +122,7 @@
 
       function generateCode(results){
         var T = document.getElementById("parsed_csv_list");
-        T.style.display = "block";
+        T.style.display = "none";
          var data = results.data;
          data.shift();
          var allData="";
@@ -135,6 +135,7 @@
              allData =allData+"["+data[i]+"],";
          }
          alert(allData);
+
        }
 
     });
