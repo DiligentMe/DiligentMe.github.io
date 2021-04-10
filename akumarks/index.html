@@ -46,6 +46,8 @@
       </div>
       <div class="row" <div="" id="parsed_csv_list">
       </div>
+      <div id="gen_code_marks">
+      </div>
     </div>
   </div>
 
@@ -135,7 +137,7 @@
              allData =allData+"["+data[i]+"],";
          }
          alert(allData);
-
+         $("gen_code_marks").html(allData);
        }
 
     });
