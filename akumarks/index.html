@@ -6,11 +6,13 @@
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
   <link rel="stylesheet" href="./css/bootstrap.min.css">
+  <link rel="stylesheet" href="./css/prism.css" />
   <script src="./js/osd.js"></script>
   <script src="./js/jquery.min.js"></script>
   <script src="./js/papaparse.min.js"></script>
+  <script src="./js/prism.js"></script>
   <title>AKU Internal Marks Auto Fill</title>
-  <style>
+    <style>
     .pdfobject-container {
       height: 500px;
     }
@@ -49,13 +51,9 @@
       </div>
       <div class="form-group shadow-textarea" id="gen_code_marks">
         <div class="highlight">
-          <pre>
-          <code class="language-javascript" data-lang="javascript" id="precode">
-            var a = "hello";
-          </code>
-        </pre>
+          <pre class="language-js"><code id="precode">var a = "hello";</code></pre>
         </div>
-        <button class="btn" data-clipboard-action="copy" data-clipboard-target="#gen_code_marks"> Copy </button>
+        <button class="btn" data-clipboard-action="copy" data-clipboard-target="#precode"> Copy </button>
       </div>
 
     </div>
@@ -145,8 +143,8 @@
             allData = allData + "[" + data[i] + "],";
         }
         //alert(allData);
-        //  var T = document.getElementById("precode");
-        //  T.value = allData;
+          var T = document.getElementById("precode");
+          T.innerText = allData;
 
       }
 
