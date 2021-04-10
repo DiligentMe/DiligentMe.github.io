@@ -121,6 +121,8 @@
       }
 
       function generateCode(results){
+        var T = document.getElementById("parsed_csv_list");
+        T.style.display = "block";
          var data = results.data;
          data.shift();
          var allData="";
