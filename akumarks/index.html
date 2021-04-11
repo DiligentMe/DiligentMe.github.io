@@ -52,7 +52,7 @@
       </div>
       <div class="form-group shadow-textarea" id="gen_code_marks" style="display:none">
         <div class="highlight">
-          <pre ><code id="precode" class="language-js"></code></pre>
+          <pre ><code id="precode" class="language-javascript"></code></pre>
         </div>
         <button class="btn" data-clipboard-action="copy" data-clipboard-target="#precode"> Copy </button>
       </div>
@@ -167,6 +167,16 @@
         data.shift();
         var allData = "";
         for (i = 0; i < data.length - 1; i++) {
+          var nameFormat=String(data[i]);
+          var r = nameFormat.split(",");
+          var nF="";
+          for(var j = 0 ; j< r.length; j++){
+            if(j == 1){
+            //  nameFormat = nameFormat.concat("\'", r[j], "\'");
+            } else{
+          //    nameFormat = nameFormat.concat(r[j]);
+          }
+          alert(nF);
           if (i == 0)
             allData = "[[" + data[i] + "],";
           else if (i == (data.length - 2))
