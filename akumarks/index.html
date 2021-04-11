@@ -12,7 +12,7 @@
   <script src="./js/papaparse.min.js"></script>
   <script src="./js/prism.js"></script>
   <title>AKU Internal Marks Auto Fill</title>
-    <style>
+  <style>
     .pdfobject-container {
       height: 500px;
     }
@@ -37,7 +37,7 @@
         <form class="form-inline">
           <div class="form-group">
             <label for="files">Upload a CSV file of Marks-<a href="./SampleMarksFile.csv">(Click me to Download Sample file)</a>:</label>
-            <input type="file" id="files" class="form-control" accept=".csv" required="">
+            <input type="file" id="files" class="form-control" accept=".csv" placeholder="Select a CSV File" required/>
           </div>
           <div class="form-group">
             <button type="submit" id="submit-file" class="btn btn-primary">Upload File</button>
@@ -49,9 +49,9 @@
       </div>
       <div class="row" <div="" id="parsed_csv_list">
       </div>
-      <div class="form-group shadow-textarea" id="gen_code_marks">
+      <div class="form-group shadow-textarea" id="gen_code_marks" style="display:none">
         <div class="highlight">
-          <pre class="language-js"><code id="precode">var a = "hello";</code></pre>
+          <pre class="language-js"><code id="precode"></code></pre>
         </div>
         <button class="btn" data-clipboard-action="copy" data-clipboard-target="#precode"> Copy </button>
       </div>
@@ -74,6 +74,7 @@
 
 
   <script type="text/javascript">
+
     $(document).ready(function() {
       $('#header').load('../header-ads.html');
       $('#footer').load('../footer-ads.html');
@@ -121,28 +122,39 @@
       });
 
       function displayHTMLTable(results) {
+
+        var T = document.getElementById("parsed_csv_list");
+        T.style.display = "block";
+        var P = document.getElementById("gen_code_marks");
+        P.style.display = "none";
+        var D = document.getElementById("instruction");
+        D.style.display = "none";
         var table = "<table class='table'>";
         var data = results.data;
+        if (document.getElementById("files").files.length == 0) {
+          alert("Chose a file with Data, Please mind the format!");
+        } else {
+          for (i = 0; i < data.length; i++) {
+            table += "<tr>";
+            var row = data[i];
+            var cells = row.join(",").split(",");
 
-        for (i = 0; i < data.length; i++) {
-          table += "<tr>";
-          var row = data[i];
-          var cells = row.join(",").split(",");
-
-          for (j = 0; j < cells.length; j++) {
-            table += "<td>";
-            table += cells[j];
-            table += "</th>";
+            for (j = 0; j < cells.length; j++) {
+              table += "<td>";
+              table += cells[j];
+              table += "</th>";
+            }
+            table += "</tr>";
           }
-          table += "</tr>";
+          table += "</table>";
+          $("#parsed_csv_list").html(table);
         }
-        table += "</table>";
-        $("#parsed_csv_list").html(table);
       }
 
       function generateCode(results) {
         var T = document.getElementById("parsed_csv_list");
         T.style.display = "none";
+
         var data = results.data;
         data.shift();
         var allData = "";
@@ -155,8 +167,10 @@
             allData = allData + "[" + data[i] + "],";
         }
         //alert(allData);
-          var T = document.getElementById("precode");
-          T.innerText = allData;
+        var K = document.getElementById("precode");
+        K.innerText = allData;
+        var P = document.getElementById("gen_code_marks");
+        P.style.display = "block";
 
       }
 
@@ -168,7 +182,7 @@
 
     clipboard.on('success', function(e) {
       var T = document.getElementById("instruction");
-      T.style.display="block";
+      T.style.display = "block";
       console.log(e);
     });
 
