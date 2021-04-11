@@ -168,21 +168,28 @@
         var allData = "";
         for (i = 0; i < data.length - 1; i++) {
           var nameFormat=String(data[i]);
-          var r = nameFormat.split(",");
-          var nF="";
-          for(var j = 0 ; j< r.length; j++){
+          nameFormat = nameFormat.split(",");
+          var colCount=nameFormat.length;
+          //alert(parseInt(colCount));
+          var oneData="";
+          for(j = 0 ; j < parseInt(colCount); j++){
             if(j == 1){
-            //  nameFormat = nameFormat.concat("\'", r[j], "\'");
-            } else{
-          //    nameFormat = nameFormat.concat(r[j]);
+              oneData = oneData.concat("\"",nameFormat[j],"\"",",");
+            } else if (j == colCount-1 ){
+              oneData = oneData.concat(nameFormat[j]);
           }
-          alert(nF);
+          else{
+            oneData = oneData.concat(nameFormat[j],",");
+          }
+        }
+          //alert(oneData);
+
           if (i == 0)
-            allData = "[[" + data[i] + "],";
+            allData = "[[" + oneData + "],";
           else if (i == (data.length - 2))
-            allData = allData + "[" + data[i] + "]]";
+            allData = allData + "[" + oneData + "]]";
           else
-            allData = allData + "[" + data[i] + "],";
+            allData = allData + "[" + oneData + "],";
         }
         //alert(allData);
         var K = document.getElementById("precode");
