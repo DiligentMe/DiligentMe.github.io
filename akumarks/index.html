@@ -37,11 +37,12 @@
         <form class="form-inline">
           <div class="form-group">
             <label for="files">Upload a CSV file of Marks-<a href="./SampleMarksFile.csv">(Click me to Download Sample file)</a>:</label>
-            <input  type="file" id="files" class="form-group"  accept=".csv" required/>
+            <input type="file" id="files" class="form-control" accept=".csv" placeholder="Select a CSV File" required />
           </div>
           <div class="form-group">
             <button type="submit" id="submit-file" class="btn btn-primary">Upload File</button>
           </div>
+
           <div class="form-group" id="codegen" style="display:none">
             <button type="submit" id="generate-code" class="btn btn-primary">Generate Code</button>
           </div>
@@ -51,7 +52,7 @@
       </div>
       <div class="form-group shadow-textarea" id="gen_code_marks" style="display:none">
         <div class="highlight">
-          <pre class="language-js"><code id="precode"></code></pre>
+          <pre ><code id="precode" class="language-js"></code></pre>
         </div>
         <button class="btn" data-clipboard-action="copy" data-clipboard-target="#precode"> Copy </button>
       </div>
@@ -74,51 +75,58 @@
 
 
   <script type="text/javascript">
-
     $(document).ready(function() {
       $('#header').load('../header-ads.html');
       $('#footer').load('../footer-ads.html');
 
       $('#submit-file').on("click", function(e) {
         e.preventDefault();
-        $('#files').parse({
-          config: {
-            delimiter: "auto",
-            complete: displayHTMLTable,
-          },
-          before: function(file, inputElem) {
-            //console.log("Parsing file...", file);
-          },
-          error: function(err, file) {
-            console.log("ERROR:", err, file);
-          },
-          complete: function() {
-            var T = document.getElementById("codegen");
-            T.style.display = "block";
-            //console.log("Done with all files");
-          }
-        });
+        if (!$('#files')[0].checkValidity()) {
+          alert("Please select a formatted CSV File!");
+        } else {
+          $('#files').parse({
+            config: {
+              delimiter: "auto",
+              complete: displayHTMLTable,
+            },
+            before: function(file, inputElem) {
+              //console.log("Parsing file...", file);
+            },
+            error: function(err, file) {
+              console.log("ERROR:", err, file);
+            },
+            complete: function() {
+              var T = document.getElementById("codegen");
+              T.style.display = "block";
+              //console.log("Done with all files");
+            }
+          });
+        }
       });
 
       $('#generate-code').on("click", function(e) {
         e.preventDefault();
-        $('#files').parse({
-          config: {
-            delimiter: "auto",
-            complete: generateCode,
-          },
-          before: function(file, inputElem) {
-            //console.log("Parsing file...", file);
-          },
-          error: function(err, file) {
-            //console.log("ERROR:", err, file);
-          },
-          complete: function() {
-            //var T = document.getElementById("submit-file");
-            //T.style.display = "none";
-            //console.log("Done with all files");
-          }
-        });
+        if (!$('#files')[0].checkValidity()) {
+          alert("Please select a formatted CSV File!");
+        } else {
+          $('#files').parse({
+            config: {
+              delimiter: "auto",
+              complete: generateCode,
+            },
+            before: function(file, inputElem) {
+              //console.log("Parsing file...", file);
+            },
+            error: function(err, file) {
+              //console.log("ERROR:", err, file);
+            },
+            complete: function() {
+              //var T = document.getElementById("submit-file");
+              //T.style.display = "none";
+              //console.log("Done with all files");
+            }
+          });
+        }
       });
 
       function displayHTMLTable(results) {
@@ -168,11 +176,38 @@
         }
         //alert(allData);
         var K = document.getElementById("precode");
-        K.innerText = allData;
+        K.innerText = "var marks=".concat(allData,';',defaultCode());
         var P = document.getElementById("gen_code_marks");
         P.style.display = "block";
-
       }
+
+      function defaultCode(){
+        var mT = "var marksTable = document.getElementById('ctl00_mastercontentplaceholder_gvInternalmark');";
+        var sC="var studentsCount = document.getElementById('ctl00_mastercontentplaceholder_gvInternalmark').rows.length;";
+var f =`function findReg(regNo){
+  var R = [];
+  for (var i = 0 ; i<marks.length;i++){
+      if(regNo == marks[i][2]){
+          R = marks[i];
+          break;
+        }
+      }
+  return R;
+}`;
+var l = `for(var i = 2; i<=studentsCount;i++){
+  var sNo = (i).toLocaleString('en-US',{minimumIntegerDigits: 2, useGrouping:false});
+  var regNumberOnWeb = marksTable.rows[i-1].cells[1].innerText;
+  var R = findReg(regNumberOnWeb);
+  if(R.length != 0){
+      console.log(regNumberOnWeb, document.getElementById('ctl00_mastercontentplaceholder_gvInternalmark_ctl'+sNo+'_txtAttendancemark').value);
+    }
+  else if (R.length == 0){
+      alert(\"For RegNo: \"+regNumberOnWeb+\" Details Not Found-> Check Input File\");
+    }
+  }`;
+        return "\n".concat(mT,"\n",sC,"\n",f,"\n",l);
+      }
+
 
     });
   </script>
