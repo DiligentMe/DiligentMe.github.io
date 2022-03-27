@@ -54,7 +54,7 @@
         <div class="highlight">
           <pre ><code id="precode" class="language-javascript"></code></pre>
         </div>
-        <button class="btn" data-clipboard-action="copy" data-clipboard-target="#precode"><span style="color:blue">Click Me to Copy and See the Next Step!</span> </button>
+        <button class="btn" data-clipboard-action="copy" data-clipboard-target="#precode" id="copyData"><span style="color:blue">Click Me to Copy and See the Next Step!</span> </button>
       </div>
       <div class="form-group" id="instruction" style="display:none">
         <pre>**********Code has been copied********
@@ -142,7 +142,7 @@
         var table = "<table class='table'>";
         var data = results.data;
         if (document.getElementById("files").files.length == 0) {
-          alert("Chose a file with Data, Please mind the format!");
+          alert("Choose a file with Data, Please mind the format!");
         } else {
           for (i = 0; i < data.length; i++) {
             table += "<tr>";
@@ -199,7 +199,8 @@
         K.innerText = "var marks=".concat(allData,';',defaultCode());
         var P = document.getElementById("gen_code_marks");
         P.style.display = "block";
-        p.scrollTop=p.scrollHeight;
+        var C = document.getElementById('copyData');
+        C.scrollTop=0;
       }
 
       function defaultCode(){
