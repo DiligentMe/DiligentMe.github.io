@@ -81,7 +81,6 @@
 
       $('#submit-file').on("click", function(e) {
         e.preventDefault();
-        document.getElementById("codegen")="none";
         if (!$('#files')[0].checkValidity()) {
           alert("Please select a formatted CSV File!");
         } else {
