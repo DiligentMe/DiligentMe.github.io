@@ -90,6 +90,7 @@
               complete: displayHTMLTable,
             },
             before: function(file, inputElem) {
+              document.getElementById("codegen")="none";
               //console.log("Parsing file...", file);
             },
             error: function(err, file) {
