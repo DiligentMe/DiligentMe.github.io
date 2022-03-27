@@ -60,13 +60,14 @@
         <pre>**********Code has been copied********
          Now Follow these steps
 1. Open new tab, login to the AKU Marks upload portal
-2. Visit to marks upload course page where you have to enter marks
+2. Visit to marks upload course page where you want to enter marks
 3. Press Ctrl+Shift+j
 4. Click on source
 5. Click >> symbol, select Snippets
-6. Paste (Ctrl+v) the code the you copied from here
-7. press Ctrl+Enter (Or click the &#x25BA; icon at the bottom of snippets editor)
-8. Its done, all marks must have been entered. Close the window which opened by step 3.</pre>
+6. Click on New Snippet
+7. Paste (Ctrl+v) the code the you copied from here
+8. press Ctrl+Enter (Or click the &#x25BA; icon at the bottom of snippets editor)
+9. Its done, all marks must have been entered. Close the window which opened by step 3.</pre>
       </div>
     </div>
 
@@ -90,7 +91,7 @@
               complete: displayHTMLTable,
             },
             before: function(file, inputElem) {
-              document.getElementById("codegen")="none";
+
               //console.log("Parsing file...", file);
             },
             error: function(err, file) {
@@ -165,6 +166,7 @@
         T.style.display = "none";
 
         var data = results.data;
+        data.shift();
         data.shift();
         var allData = "";
         for (i = 0; i < data.length - 1; i++) {
