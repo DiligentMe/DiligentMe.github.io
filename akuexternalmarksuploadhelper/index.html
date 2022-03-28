@@ -11,6 +11,7 @@
   <script src="./js/jquery.min.js"></script>
   <script src="./js/papaparse.min.js"></script>
   <script src="./js/prism.js"></script>
+
   <title>AKU External Marks Auto Fill</title>
   <style>
     .pdfobject-container {
@@ -28,8 +29,9 @@
   <div class="container" style="padding: 10px; height: auto !important;">
 
     <div id="header" class="align-items-end">
-      <div style="padding-bottom:10px" >
-        <a href="https://hits.seeyoufarm.com"><img src="https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fdiligentme.github.io%2Fakuexternalmarksuploadhelper%2F&count_bg=%2379C83D&title_bg=%23555555&icon=&icon_color=%23E7E7E7&title=hits&edge_flat=false"/></a>
+      <div style="padding-bottom:10px">
+        <a href="https://hits.seeyoufarm.com"><img
+            src="https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fdiligentme.github.io%2Fakuexternalmarksuploadhelper%2F&count_bg=%2379C83D&title_bg=%23555555&icon=&icon_color=%23E7E7E7&title=hits&edge_flat=false" /></a>
       </div>
     </div>
     <h1>AKU External Marks Auto Fill</h1>
@@ -53,7 +55,7 @@
       </div>
       <div class="form-group shadow-textarea" id="gen_code_marks" style="display:none">
         <div class="highlight">
-          <pre ><code id="precode" class="language-javascript"></code></pre>
+          <pre><code id="precode" class="language-javascript"></code></pre>
         </div>
         <button class="btn" data-clipboard-action="copy" data-clipboard-target="#precode" id="copyData"><span style="color:blue">Click Me to Copy and See the Next Step!</span> </button>
       </div>
@@ -171,21 +173,20 @@
         data.shift();
         var allData = "";
         for (i = 0; i < data.length - 1; i++) {
-          var nameFormat=String(data[i]);
+          var nameFormat = String(data[i]);
           nameFormat = nameFormat.split(",");
-          var colCount=nameFormat.length;
+          var colCount = nameFormat.length;
           //alert(parseInt(colCount));
-          var oneData="";
-          for(j = 0 ; j < parseInt(colCount); j++){
-            if(j == 1){
-              oneData = oneData.concat("\"",nameFormat[j],"\"",",");
-            } else if (j == colCount-1 ){
+          var oneData = "";
+          for (j = 0; j < parseInt(colCount); j++) {
+            if (j == 1) {
+              oneData = oneData.concat("\"", nameFormat[j], "\"", ",");
+            } else if (j == colCount - 1) {
               oneData = oneData.concat(nameFormat[j]);
+            } else {
+              oneData = oneData.concat(nameFormat[j], ",");
+            }
           }
-          else{
-            oneData = oneData.concat(nameFormat[j],",");
-          }
-        }
           //alert(oneData);
 
           if (i == 0)
@@ -197,16 +198,16 @@
         }
         //alert(allData);
         var K = document.getElementById("precode");
-        K.innerText = "var marks=".concat(allData,';',defaultCode());
+        K.innerText = "var marks=".concat(allData, ';', defaultCode());
         var P = document.getElementById("gen_code_marks");
         P.style.display = "block";
         var C = document.getElementById('copyData');
-        C.scrollTop=0;
+        C.scrollTop = 0;
       }
 
-      function defaultCode(){
+      function defaultCode() {
         /*Don't Edit this code for any reason*/
-        var words=`var words = { 0: "Zero", 1: "One", 2: "Two", 3: "Three", 4: "Four", 5: "Five", 6: "Six", 7: "Seven", 8: "Eight", 9: "Nine",
+        var words = `var words = { 0: "Zero", 1: "One", 2: "Two", 3: "Three", 4: "Four", 5: "Five", 6: "Six", 7: "Seven", 8: "Eight", 9: "Nine",
           10: "Ten", 11: "Eleven", 12: "Twelve", 13: "Thirteen", 14: "Fourteen", 15: "Fifteen", 16: "Sixteen",
           17: "Seventeen", 18: "Eighteen", 19: "Nineteen", 20: "Twenty", 21: "Twenty One", 22: "Twenty Two",
           23: "Twenty Three", 24: "Twenty Four", 25: "Twenty Five", 26: "Twenty Six", 27: "Twenty Seven", 28: "Twenty Eight",
@@ -223,45 +224,42 @@
           89: "Eighty Nine", 90: "Ninety", 91: "Ninety One", 92: "Ninety Two", 93: "Ninety Three", 94: "Ninety Four",
           95: "Ninety Five", 96: "Ninety Six", 97: "Ninety Seven", 98: "Ninety Eight", 99: "Ninety Nine", 100: "Hundred" };`;
         var mT = "var marksTable = document.getElementById('ctl00_mastercontentplaceholder_GridDetails');";
-        var sC="var studentsCount = document.getElementById('ctl00_mastercontentplaceholder_GridDetails').rows.length;";
-var f =`function findReg(regNo){
-  var R = [];
-  for (var i = 0 ; i<marks.length;i++){
-      if(regNo == marks[i][2]){
-          R = marks[i];
-          break;
-        }
-      }
-  return R;
-}`;
-var l = `for(var i = 2; i<=studentsCount;i++){
-  var sNo = (i).toLocaleString('en-US',{minimumIntegerDigits: 2, useGrouping:false});
-  var regNumberOnWeb = marksTable.rows[i-1].cells[1].innerText;
-  var R = findReg(regNumberOnWeb);
-  var flag=0;
-  if(R.length != 0){
-      ctl00_mastercontentplaceholder_GridDetails_ctl02_Txtmarks
-      //console.log(regNumberOnWeb, document.getElementById('ctl00_mastercontentplaceholder_gvInternalmark_ctl'+sNo+'_txtAttendancemark').value);
-      document.getElementById('ctl00_mastercontentplaceholder_GridDetails_ctl'+sNo+'_Txtmarks').value=R[3];
-      document.getElementById('ctl00_mastercontentplaceholder_GridDetails_ctl'+sNo+'_txtMarkWord').value=words[R[3]];
+        var sC = "var studentsCount = document.getElementById('ctl00_mastercontentplaceholder_GridDetails').rows.length;";
+        var f = `function findReg(regNo){
+                  var R = [];
+                  for (var i = 0 ; i<marks.length;i++){
+                      if(regNo == marks[i][2]){
+                        R = marks[i];
+                        break;
+                      }
+                    }
+                    return R;
+                  }`;
+        var l = `for(var i = 2; i<=studentsCount;i++){
+                    var sNo = (i).toLocaleString('en-US',{minimumIntegerDigits: 2, useGrouping:false});
+                    var regNumberOnWeb = marksTable.rows[i-1].cells[1].innerText;
+                    var R = findReg(regNumberOnWeb);
+                    var flag=0;
+                    if(R.length != 0){
 
-      //console.log("Found: "+R[2]+", Marks have been filled!");
-    }
-  else if (R.length == 0){
-      flag=1;
-      console.log("For RegNo: "+regNumberOnWeb+", Details Not Found-> Check Input File or Edit it Manually on the portal");
-      //alert("For RegNo: "+regNumberOnWeb+" Details Not Found-> Check Input File");
-    }
-  }
-if(flag == 0){
-    console.log("All Set, Good To Go !\\n*****Please Use Submit button on the AKU portal to save your data.*****\\n*****Please Crosscheck before Making Final Submission i.e before Principal's Approval*****");
-
-}`;
-        return "\n".concat(words,"\n",mT,"\n",sC,"\n",f,"\n",l);
-      }
+                      //console.log(regNumberOnWeb, document.getElementById('ctl00_mastercontentplaceholder_gvInternalmark_ctl'+sNo+'_txtAttendancemark').value);
+                    document.getElementById('ctl00_mastercontentplaceholder_GridDetails_ctl'+sNo+'_Txtmarks').value=R[3];
+                    document.getElementById('ctl00_mastercontentplaceholder_GridDetails_ctl'+sNo+'_txtMarkWord').value=words[R[3]];
+                    //console.log("Found: "+R[2]+", Marks have been filled!");
+                  }
+                  else if (R.length == 0){
+                    flag=1;
+                    console.log("For RegNo: "+regNumberOnWeb+", Details Not Found-> Check Input File or Edit it Manually on the portal");
+                    //alert("For RegNo: "+regNumberOnWeb+" Details Not Found-> Check Input File");
+                  }
+                }
+                if(flag == 0){
+                  console.log("All Set, Good To Go !\\n*****Please Use Submit button on the AKU portal to save your data.*****\\n*****Please Crosscheck before Making Final Submission i.e before Principal's Approval*****");}`;
+                  return "\n".concat(words, "\n", mT, "\n", sC, "\n", f, "\n", l);
+                }
+      });
 
 
-    });
   </script>
   <script src="./js/clipboard.min.js"></script>
   <script>
