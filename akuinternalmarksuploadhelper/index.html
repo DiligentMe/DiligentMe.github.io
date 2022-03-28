@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<!-- saved from url=(0055)http://js-tutorials.com/demos/read_csv_javascript_demo/ -->
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+  <link rel="stylesheet" href="./css/bootstrap.min.css">
+  <link rel="stylesheet" href="./css/prism.css" />
+  <script src="./js/osd.js"></script>
+  <script src="./js/jquery.min.js"></script>
+  <script src="./js/papaparse.min.js"></script>
+  <script src="./js/prism.js"></script>
+  <title>AKU Internal Marks Auto Fill</title>
+  <style>
+    .pdfobject-container {
+      height: 500px;
+    }
+
+    .pdfobject {
+      border: 1px solid #666;
+    }
+  </style>
+
+</head>
+
+<body data-new-gr-c-s-check-loaded="14.1002.0" data-gr-ext-installed="">
+  <div class="container" style="padding: 10px; height: auto !important;">
+    <h1>AKU Internal Marks Auto Fill</h1>
+    <div id="header">
+      <div style="padding-bootom:10px">
+
+      </div>
+    </div>
+    <div class="well">
+      <div class="row">
+        <form class="form-inline">
+          <div class="form-group">
+            <label for="files">Upload a CSV file of Marks-<a href="./SampleFileInternalMarks.csv">(Click me to Download Sample file)</a>:</label>
+            <input type="file" id="files" class="form-control" accept=".csv" placeholder="Select a CSV File" required />
+          </div>
+          <div class="form-group">
+            <button type="submit" id="submit-file" class="btn btn-primary">Upload File</button>
+          </div>
+
+          <div class="form-group" id="codegen" style="display:none">
+            <button type="submit" id="generate-code" class="btn btn-primary">Click Me to Generate Code and Go to Next Step!</button>
+          </div>
+        </form>
+      </div>
+      <div class="row" <div="" id="parsed_csv_list">
+      </div>
+      <div class="form-group shadow-textarea" id="gen_code_marks" style="display:none">
+        <div class="highlight">
+          <pre ><code id="precode" class="language-javascript"></code></pre>
+        </div>
+        <button class="btn" data-clipboard-action="copy" data-clipboard-target="#precode" id="copyData"><span style="color:blue">Click Me to Copy and See the Next Step!</span> </button>
+      </div>
+      <div class="form-group" id="instruction" style="display:none">
+        <pre>**********Code has been copied********
+         Now, Please Follow these steps
+1. Open new tab, login to the AKU Marks upload portal
+2. Visit to marks upload course page where you want to enter marks
+3. Press Ctrl+Shift+j
+4. Click on source
+5. Click >> symbol, select Snippets
+6. Click on "+ New Snippet" Button on left panel
+7. Paste (Ctrl+v) the code the you copied from here
+8. press Ctrl+Enter (Or click the &#x25BA; icon at the bottom of snippets editor)
+9. Its done, all marks must have been entered. Close the window which opened by step 3.</pre>
+      </div>
+    </div>
+
+  </div>
+
+
+
+  <script type="text/javascript">
+    $(document).ready(function() {
+      $('#header').load('../header-ads.html');
+      $('#footer').load('../footer-ads.html');
+
+      $('#submit-file').on("click", function(e) {
+        e.preventDefault();
+        if (!$('#files')[0].checkValidity()) {
+          alert("Please select a formatted CSV File!");
+        } else {
+          $('#files').parse({
+            config: {
+              delimiter: "auto",
+              complete: displayHTMLTable,
+            },
+            before: function(file, inputElem) {
+
+              //console.log("Parsing file...", file);
+            },
+            error: function(err, file) {
+              console.log("ERROR:", err, file);
+            },
+            complete: function() {
+              var T = document.getElementById("codegen");
+              T.style.display = "block";
+              //console.log("Done with all files");
+            }
+          });
+        }
+      });
+
+      $('#generate-code').on("click", function(e) {
+        e.preventDefault();
+        if (!$('#files')[0].checkValidity()) {
+          alert("Please select a formatted CSV File!");
+        } else {
+          $('#files').parse({
+            config: {
+              delimiter: "auto",
+              complete: generateCode,
+            },
+            before: function(file, inputElem) {
+              //console.log("Parsing file...", file);
+            },
+            error: function(err, file) {
+              //console.log("ERROR:", err, file);
+            },
+            complete: function() {
+              //var T = document.getElementById("submit-file");
+              //T.style.display = "none";
+              //console.log("Done with all files");
+            }
+          });
+        }
+      });
+
+      function displayHTMLTable(results) {
+
+        var T = document.getElementById("parsed_csv_list");
+        T.style.display = "block";
+        var P = document.getElementById("gen_code_marks");
+        P.style.display = "none";
+        var D = document.getElementById("instruction");
+        D.style.display = "none";
+        var table = "<table class='table'>";
+        var data = results.data;
+        if (document.getElementById("files").files.length == 0) {
+          alert("Choose a file with Data, Please mind the format!");
+        } else {
+          for (i = 0; i < data.length; i++) {
+            table += "<tr>";
+            var row = data[i];
+            var cells = row.join(",").split(",");
+
+            for (j = 0; j < cells.length; j++) {
+              table += "<td>";
+              table += cells[j];
+              table += "</th>";
+            }
+            table += "</tr>";
+          }
+          table += "</table>";
+          $("#parsed_csv_list").html(table);
+        }
+      }
+
+      function generateCode(results) {
+        var T = document.getElementById("parsed_csv_list");
+        T.style.display = "none";
+
+        var data = results.data;
+        data.shift();
+        data.shift();
+        var allData = "";
+        for (i = 0; i < data.length - 1; i++) {
+          var nameFormat=String(data[i]);
+          nameFormat = nameFormat.split(",");
+          var colCount=nameFormat.length;
+          //alert(parseInt(colCount));
+          var oneData="";
+          for(j = 0 ; j < parseInt(colCount); j++){
+            if(j == 1){
+              oneData = oneData.concat("\"",nameFormat[j],"\"",",");
+            } else if (j == colCount-1 ){
+              oneData = oneData.concat(nameFormat[j]);
+          }
+          else{
+            oneData = oneData.concat(nameFormat[j],",");
+          }
+        }
+          //alert(oneData);
+
+          if (i == 0)
+            allData = "[[" + oneData + "],";
+          else if (i == (data.length - 2))
+            allData = allData + "[" + oneData + "]]";
+          else
+            allData = allData + "[" + oneData + "],";
+        }
+        //alert(allData);
+        var K = document.getElementById("precode");
+        K.innerText = "var marks=".concat(allData,';',defaultCode());
+        var P = document.getElementById("gen_code_marks");
+        P.style.display = "block";
+        var C = document.getElementById('copyData');
+        C.scrollTop=0;
+      }
+
+      function defaultCode(){
+        /*Don't Edit this code for any reason*/
+        var words=`var words = { 0: "Zero", 1: "One", 2: "Two", 3: "Three", 4: "Four", 5: "Five", 6: "Six", 7: "Seven", 8: "Eight", 9: "Nine",
+          10: "Ten", 11: "Eleven", 12: "Twelve", 13: "Thirteen", 14: "Fourteen", 15: "Fifteen", 16: "Sixteen",
+          17: "Seventeen", 18: "Eighteen", 19: "Nineteen", 20: "Twenty", 21: "Twenty One", 22: "Twenty Two",
+          23: "Twenty Three", 24: "Twenty Four", 25: "Twenty Five", 26: "Twenty Six", 27: "Twenty Seven", 28: "Twenty Eight",
+          29: "Twenty Nine", 30: "Thirty", 31: "Thirty One", 32: "Thirty Two", 33: "Thirty Three", 34: "Thirty Four",
+          35: "Thirty Five", 36: "Thirty Six", 37: "Thirty Seven", 38: "Thirty Eight", 39: "Thirty Nine", 40: "Forty",
+          41: "Forty One", 42: "Forty Two", 43: "Forty Three", 44: "Forty Four", 45: "Forty Five", 46: "Forty Six",
+          47: "Forty Seven", 48: "Forty Eight", 49: "Forty Nine", 50: "Fifty", 51: "Fifty One", 52: "Fifty Two",
+          53: "Fifty Three", 54: "Fifty Four", 55: "Fifty Five", 56: "Fifty Six", 57: "Fifty Seven", 58: "Fifty Eight",
+          59: "Fifty Nine", 60: "Sixty", 61: "Sixty One", 62: "Sixty Two", 63: "Sixty Three", 64: "Sixty Four",
+          65: "Sixty Five", 66: "Sixty Six", 67: "Sixty Seven", 68: "Sixty Eight", 69: "Sixty Nine", 70: "Seventy",
+          71: "Seventy Two", 72: "Seventy Two", 73: "Seventy Three", 74: "Seventy Four", 75: "Seventy Five", 76: "Seventy Six",
+          77: "Seventy Seven", 78: "Seventy Eight", 79: "Seventy Nine", 80: "Eighty", 81: "Eighty One", 82: "Eighty Two",
+          83: "Eighty Three", 84: "Eighty Four", 85: "Eighty Five", 86: "Eighty Six", 87: "Eighty Seven", 88: "Eighty Eight",
+          89: "Eighty Nine", 90: "Ninety", 91: "Ninety One", 92: "Ninety Two", 93: "Ninety Three", 94: "Ninety Four",
+          95: "Ninety Five", 96: "Ninety Six", 97: "Ninety Seven", 98: "Ninety Eight", 99: "Ninety Nine", 100: "Hundred" };`;
+        var mT = "var marksTable = document.getElementById('ctl00_mastercontentplaceholder_gvInternalmark');";
+        var sC="var studentsCount = document.getElementById('ctl00_mastercontentplaceholder_gvInternalmark').rows.length;";
+var f =`function findReg(regNo){
+  var R = [];
+  for (var i = 0 ; i<marks.length;i++){
+      if(regNo == marks[i][2]){
+          R = marks[i];
+          break;
+        }
+      }
+  return R;
+}`;
+var l = `for(var i = 2; i<=studentsCount;i++){
+  var sNo = (i).toLocaleString('en-US',{minimumIntegerDigits: 2, useGrouping:false});
+  var regNumberOnWeb = marksTable.rows[i-1].cells[1].innerText;
+  var R = findReg(regNumberOnWeb);
+  var flag=0;
+  if(R.length != 0){
+      //console.log(regNumberOnWeb, document.getElementById('ctl00_mastercontentplaceholder_gvInternalmark_ctl'+sNo+'_txtAttendancemark').value);
+      document.getElementById('ctl00_mastercontentplaceholder_gvInternalmark_ctl'+sNo+'_txtAttendancemark').value=R[4];
+      document.getElementById('ctl00_mastercontentplaceholder_gvInternalmark_ctl'+sNo+'_txtClassTestmark').value=R[5];
+      document.getElementById('ctl00_mastercontentplaceholder_gvInternalmark_ctl'+sNo+'_txtESEmark').value=R[6];
+	    document.getElementById('ctl00_mastercontentplaceholder_gvInternalmark_ctl'+sNo+'_txtmark').value=R[4]+R[5]+R[6];
+      document.getElementById('ctl00_mastercontentplaceholder_gvInternalmark_ctl'+sNo+'_txtMarkWord').value=words[R[4]+R[5]+R[6]];
+
+      //console.log("Found: "+R[2]+", Marks have been filled!");
+    }
+  else if (R.length == 0){
+      flag=1;
+      console.log("For RegNo: "+regNumberOnWeb+", Details Not Found-> Check Input File or Edit it Manually on the portal");
+      //alert("For RegNo: "+regNumberOnWeb+" Details Not Found-> Check Input File");
+    }
+  }
+if(flag == 0){
+    console.log("All Set, Good To Go !\\n*****Please Use Submit button on the AKU portal to save your data.*****\\n*****Please Crosscheck before Making Final Submission i.e before Principal's Approval*****");
+
+}`;
+        return "\n".concat(words,"\n",mT,"\n",sC,"\n",f,"\n",l);
+      }
+
+
+    });
+  </script>
+  <script src="./js/clipboard.min.js"></script>
+  <script>
+    var clipboard = new ClipboardJS('.btn');
+
+    clipboard.on('success', function(e) {
+      var T = document.getElementById("instruction");
+      T.style.display = "block";
+      console.log(e);
+    });
+
+    clipboard.on('error', function(e) {
+      console.log(e);
+    });
+  </script>
+</body>
+
+</html>
