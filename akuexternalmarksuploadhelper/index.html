@@ -221,8 +221,8 @@
           83: "Eighty Three", 84: "Eighty Four", 85: "Eighty Five", 86: "Eighty Six", 87: "Eighty Seven", 88: "Eighty Eight",
           89: "Eighty Nine", 90: "Ninety", 91: "Ninety One", 92: "Ninety Two", 93: "Ninety Three", 94: "Ninety Four",
           95: "Ninety Five", 96: "Ninety Six", 97: "Ninety Seven", 98: "Ninety Eight", 99: "Ninety Nine", 100: "Hundred" };`;
-        var mT = "var marksTable = document.getElementById('ctl00_mastercontentplaceholder_gvInternalmark');";
-        var sC="var studentsCount = document.getElementById('ctl00_mastercontentplaceholder_gvInternalmark').rows.length;";
+        var mT = "var marksTable = document.getElementById('ctl00_mastercontentplaceholder_GridDetails');";
+        var sC="var studentsCount = document.getElementById('ctl00_mastercontentplaceholder_GridDetails').rows.length;";
 var f =`function findReg(regNo){
   var R = [];
   for (var i = 0 ; i<marks.length;i++){
@@ -239,12 +239,10 @@ var l = `for(var i = 2; i<=studentsCount;i++){
   var R = findReg(regNumberOnWeb);
   var flag=0;
   if(R.length != 0){
+      ctl00_mastercontentplaceholder_GridDetails_ctl02_Txtmarks
       //console.log(regNumberOnWeb, document.getElementById('ctl00_mastercontentplaceholder_gvInternalmark_ctl'+sNo+'_txtAttendancemark').value);
-      document.getElementById('ctl00_mastercontentplaceholder_gvInternalmark_ctl'+sNo+'_txtAttendancemark').value=R[4];
-      document.getElementById('ctl00_mastercontentplaceholder_gvInternalmark_ctl'+sNo+'_txtClassTestmark').value=R[5];
-      document.getElementById('ctl00_mastercontentplaceholder_gvInternalmark_ctl'+sNo+'_txtESEmark').value=R[6];
-	    document.getElementById('ctl00_mastercontentplaceholder_gvInternalmark_ctl'+sNo+'_txtmark').value=R[4]+R[5]+R[6];
-      document.getElementById('ctl00_mastercontentplaceholder_gvInternalmark_ctl'+sNo+'_txtMarkWord').value=words[R[4]+R[5]+R[6]];
+      document.getElementById('ctl00_mastercontentplaceholder_GridDetails_ct'+sNo+'_Txtmarks').value=R[3];
+      document.getElementById('ctl00_mastercontentplaceholder_gvInternalmark_ctl'+sNo+'_txtMarkWord').value=words[R[3]];
 
       //console.log("Found: "+R[2]+", Marks have been filled!");
     }
