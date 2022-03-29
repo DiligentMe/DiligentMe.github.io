@@ -241,11 +241,11 @@ var l = `for(var i = 2; i<=studentsCount;i++){
   var flag=0;
   if(R.length != 0){
       //console.log(regNumberOnWeb, document.getElementById('ctl00_mastercontentplaceholder_gvInternalmark_ctl'+sNo+'_txtAttendancemark').value);
-      document.getElementById('ctl00_mastercontentplaceholder_gvInternalmark_ctl'+sNo+'_txtAttendancemark').value=R[4];
-      document.getElementById('ctl00_mastercontentplaceholder_gvInternalmark_ctl'+sNo+'_txtClassTestmark').value=R[5];
-      document.getElementById('ctl00_mastercontentplaceholder_gvInternalmark_ctl'+sNo+'_txtESEmark').value=R[6];
-	    document.getElementById('ctl00_mastercontentplaceholder_gvInternalmark_ctl'+sNo+'_txtmark').value=R[4]+R[5]+R[6];
-      document.getElementById('ctl00_mastercontentplaceholder_gvInternalmark_ctl'+sNo+'_txtMarkWord').value=words[R[4]+R[5]+R[6]];
+      document.getElementById('ctl00_mastercontentplaceholder_gvInternalmark_ctl'+sNo+'_txtAttendancemark').value=R[3];
+      document.getElementById('ctl00_mastercontentplaceholder_gvInternalmark_ctl'+sNo+'_txtClassTestmark').value=R[4];
+      document.getElementById('ctl00_mastercontentplaceholder_gvInternalmark_ctl'+sNo+'_txtESEmark').value=R[5];
+	    document.getElementById('ctl00_mastercontentplaceholder_gvInternalmark_ctl'+sNo+'_txtmark').value=R[3]+R[4]+R[5];
+      document.getElementById('ctl00_mastercontentplaceholder_gvInternalmark_ctl'+sNo+'_txtMarkWord').value=words[R[3]+R[4]+R[5]];
 
       //console.log("Found: "+R[2]+", Marks have been filled!");
     }
