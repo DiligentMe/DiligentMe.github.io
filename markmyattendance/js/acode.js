@@ -192,6 +192,7 @@ function getKeyByValue(object, value) {
 function buildDataForAttendanceTable(forMonthYear = 'All Months') {
   //buildMonthCalendarWorkingDays();
   //alert(forMonthYear);
+  document.getElementById('monthpicker').style.display = 'inline-block';
   allDates = new Array();
 
   if (forMonthYear == 'All Months') {
@@ -287,6 +288,15 @@ function buildAttendanceTable() {
     footerFormatter: '-',
   });
   column.push({
+    field: 'regNo',
+    title: 'Reg. No.',
+    sortable: true,
+    align: 'center',
+    valign: 'middle',
+    cellStyle: "CSS{ color: 'red' }",
+    footerFormatter: 'Total Attendance',
+  });
+  column.push({
     field: 'name',
     title: 'Name',
     sortable: true,
@@ -294,22 +304,14 @@ function buildAttendanceTable() {
     valign: 'middle',
     footerFormatter: '-',
   });
-  column.push({
-    field: 'regNo',
-    title: 'Reg. No.',
-    sortable: true,
-    align: 'center',
-    valign: 'middle',
-    footerFormatter: '-',
-  });
+
   column.push({
     field: 'bioId',
     title: 'Bio ID',
     sortable: true,
     align: 'center',
     valign: 'middle',
-    cellStyle: "CSS{ color: 'red' }",
-    footerFormatter: 'Total Attendance',
+    footerFormatter: '-',
   });
   for (let i = 0; i < allDates.length; i++) {
     let tempdateAlter = allDates[i].split('/');
@@ -345,6 +347,7 @@ function buildAttendanceTable() {
     T.style.display = 'block';
     var P = document.getElementById('noData');
     P.style.display = 'none';
+    document.getElementById('monthpicker').style.display = 'none';
     //$('#parsed_csv_list').html(table);
     //$('#datatable').html(table);
     $('#datatable').bootstrapTable({
