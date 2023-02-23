@@ -355,7 +355,7 @@ function buildAttendanceTable() {
       data: dataForTable,
       search: true,
       fixedColumns: true,
-      fixedNumber: +4,
+      fixedNumber: +2,
       iconSize: 'sm',
       cellStyle: 'text-color: Blue;',
     });
