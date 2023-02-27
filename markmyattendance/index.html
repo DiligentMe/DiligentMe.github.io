@@ -141,7 +141,21 @@
     </div>
   </div>
 
+  <!-- Remove the container if you want to extend the Footer to full width. -->
+  <div class="container-fluid fixed-bottom fixed-footer" style="margin-bottom: 0px; margin-top: 0px;">
 
+    <footer class="text-center text-black">
+      <!-- Copyright -->
+      <div class="text-center p-1 text-primary">
+        <span class="text-success">Biometric Attendance Processor (Mark My Attendance)</span>
+        <!-- © --> | Developed By:
+        <a class="text-danger" href="https://www.mitmuzaffarpur.org/">MIT Muzaffarpur</a>
+      </div>
+      <!-- Copyright -->
+    </footer>
+
+  </div>
+  <!-- End of .container -->
 
   <script type="text/javascript">
     $(document).ready(function () {
@@ -223,7 +237,7 @@
               document.getElementById('submit-ids').disabled = true;
               document.getElementById('bioIdUploaded').innerHTML = '<p style="margin-top:10px;">' + "Biometric ID File " + '<b>' + fname + '</b>' + " is uploaded. " + '<a href="javascript:idChange()"><text style="color:orange;">Click</text></a>' + " to upload new Biometric ID File." + "</p>";
               document.getElementById('bioIdUploaded').style.display = "inline-block";
-
+              document.getElementById('months').value = "All Months";
               //console.log("Done with all files");
             }
           });
