@@ -235,7 +235,7 @@ function buildDataForAttendanceTable(forMonthYear = 'All Months') {
     oneStudentData = {
       sn: i + 1,
       regNo: idData[i][0],
-      name: idData[i][1],
+      name: idData[i][1].toUpperCase(),
       bioId: idData[i][2],
     };
     //console.log(dateattnMap);
@@ -257,6 +257,9 @@ function buildDataForAttendanceTable(forMonthYear = 'All Months') {
 
   let present = 0;
   let absent = 0;
+  let totalStudentsPresent = 0;
+  let totalStudents = idData.length;
+  let totalDates = allDates.length;
 
   for (let i = 0; i < allDates.length; i++) {
     present = 0;
@@ -267,12 +270,29 @@ function buildDataForAttendanceTable(forMonthYear = 'All Months') {
       else absent++;
     }
     percentage = Math.round((present / (present + absent)) * 100);
+    totalStudentsPresent += present;
     attnTotalMap.set(
       allDates[i],
       present + '/' + (present + absent) + ' (' + percentage + '%)'
     );
     //console.log(allDates[i], present, absent);
   }
+
+  let averageAttendancePercantage = Math.round(
+    (totalStudentsPresent / (totalStudents * totalDates)) * 100
+  );
+
+  attnTotalMap.set(
+    'Present %',
+    totalStudentsPresent +
+      '/(' +
+      totalStudents +
+      '*' +
+      totalDates +
+      ') = (' +
+      averageAttendancePercantage +
+      '%)'
+  );
   buildAttendanceTable();
 }
 
@@ -332,6 +352,7 @@ function buildAttendanceTable() {
     sortable: true,
     align: 'center',
     valign: 'middle',
+    footerFormatter: attnTotalMap.get('Present %'),
   });
   /*  var select = document.getElementById('months');
   for (var i = 0; i < availMonths.length; i++) {
