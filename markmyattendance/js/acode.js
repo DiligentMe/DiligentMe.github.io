@@ -197,7 +197,18 @@ function buildDataForAttendanceTable(forMonthYear = 'All Months') {
 
   if (forMonthYear == 'All Months') {
     allDates = getDates(firstDate, lastDate);
+    if (availMonths.length == 1) {
+      var monthYearForTableTitle = availMonths[0];
+    } else
+      var monthYearForTableTitle = availMonths[0].concat(
+        ' - ',
+        availMonths[availMonths.length - 1]
+      );
+    document.getElementById('tableTitle').innerText =
+      'Attendance for ' + monthYearForTableTitle;
   } else {
+    document.getElementById('tableTitle').innerText =
+      'Attendance for ' + forMonthYear;
     var month = forMonthYear.split(' ')[0];
     var year = forMonthYear.split(' ')[1];
     let fDate =
