@@ -375,6 +375,7 @@ function buildAttendanceTable() {
       columns: column,
       data: dataForTable,
       search: true,
+      showFullscreen: true,
       fixedColumns: true,
       fixedNumber: +2,
       iconSize: 'sm',
