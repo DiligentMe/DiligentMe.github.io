@@ -491,7 +491,7 @@ function buildAttendanceTable() {
            // console.log(i + ' ' + v); 
           }
 
-          for (let [key, value] of uniqueIdMap) {
+         /* for (let [key, value] of uniqueIdMap) {
             $table.bootstrapTable('updateCellByUniqueId', {
               id: key,
               field: 'Present %',
@@ -499,7 +499,7 @@ function buildAttendanceTable() {
               reinit: false,
             });
             //console.log(key + ' = ' + value);
-          }
+          }*/
 
           //$table.bootstrapTable('hideLoading');
         },
