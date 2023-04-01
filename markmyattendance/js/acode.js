@@ -498,7 +498,7 @@ function buildAttendanceTable() {
               value: value,
               reinit: false,
             });
-            console.log(key + ' = ' + value);
+            //console.log(key + ' = ' + value);
           }
 
           $table.bootstrapTable('hideLoading');
