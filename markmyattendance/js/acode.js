@@ -518,7 +518,7 @@ function buildAttendanceTable() {
 
 function readBioCSV(results, fileType = '.csv') {
   //console.log(results.data);
-  alert(results.data.length + '\n' + results.data);
+  //alert(results.data.length + '\n' + results.data);
   bioData = new Map();
   availMonths = new Array();
   idDateTimeMap = new Map();
