@@ -481,14 +481,14 @@ function buildAttendanceTable() {
             }
             let percnt = Math.round((K[0] / K[1]) * 100);
             let v = K[0] + '/' + K[1] + ' (' + percnt + '%)';
-            uniqueIdMap.set(data[i]['bioId'], v);
-            /* $table.bootstrapTable('updateCell', {
+            //uniqueIdMap.set(data[i]['bioId'], v);
+            $table.bootstrapTable('updateCell', {
               index: i,
               field: 'Present %',
               value: v,
               reinit: false,
             });
-            console.log(i + ' ' + v); */
+           // console.log(i + ' ' + v); 
           }
 
           for (let [key, value] of uniqueIdMap) {
