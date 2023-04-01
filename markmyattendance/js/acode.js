@@ -524,7 +524,7 @@ function readBioCSV(results, fileType = '.csv') {
   idDateTimeMap = new Map();
   let filecheck = 1;
   if (fileType === '.dat') {
-    filecheck = 1;
+    filecheck = 0;
   }
 
   for (let i = 0; i < results.data.length - filecheck; i++) {
