@@ -457,7 +457,7 @@ function buildAttendanceTable() {
           //alert(field + ' ' + String.raw`${field}`);
           //let checked = checked;
 
-          $table.bootstrapTable('showLoading');
+         // $table.bootstrapTable('showLoading');
           let data = $table.bootstrapTable('getData');
           //let j = JSON.stringify(data);
           //alert(j);
@@ -501,7 +501,7 @@ function buildAttendanceTable() {
             //console.log(key + ' = ' + value);
           }
 
-          $table.bootstrapTable('hideLoading');
+          //$table.bootstrapTable('hideLoading');
         },
       });
   } else {
@@ -524,7 +524,7 @@ function readBioCSV(results, fileType = '.csv') {
   idDateTimeMap = new Map();
   let filecheck = 1;
   if (fileType === '.dat') {
-    filecheck = 0;
+    filecheck = 1;
   }
 
   for (let i = 0; i < results.data.length - filecheck; i++) {
