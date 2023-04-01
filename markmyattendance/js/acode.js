@@ -10,6 +10,7 @@ let attnTotalMap;
 let attnStudentWiseMap;
 let firstDate = null;
 let lastDate = null;
+let filteredDate = null;
 let dstHolidays = {
   0: ['01/01/2023', '01/15/2023', '01/26/2023'],
   1: ['02/05/2023', '02/18/2023'],
@@ -161,7 +162,7 @@ function getDates(startDate, stopDate) {
 }
 
 function buildMonthCalendarWorkingDays(forMonthYear = 'All Months') {
-  console.log(getDates(firstDate, lastDate));
+  //console.log(getDates(firstDate, lastDate));
 
   let month;
   let year;
@@ -210,6 +211,7 @@ function buildDataForAttendanceTable(forMonthYear = 'All Months') {
   //buildMonthCalendarWorkingDays();
   //alert(forMonthYear);
   document.getElementById('monthpicker').style.display = 'inline-block';
+
   allDates = new Array();
 
   if (forMonthYear == 'All Months') {
@@ -289,6 +291,7 @@ function buildDataForAttendanceTable(forMonthYear = 'All Months') {
   let totalStudents = idData.length;
   let totalDates = allDates.length;
 
+  // All students Date wise attendance percentage
   for (let i = 0; i < allDates.length; i++) {
     present = 0;
     absent = 0;
@@ -299,13 +302,13 @@ function buildDataForAttendanceTable(forMonthYear = 'All Months') {
     }
     percentage = Math.round((present / (present + absent)) * 100);
     totalStudentsPresent += present;
+
     attnTotalMap.set(
       allDates[i],
       present + '/' + (present + absent) + ' (' + percentage + '%)'
     );
     //console.log(allDates[i], present, absent);
   }
-
   let averageAttendancePercantage = Math.round(
     (totalStudentsPresent / (totalStudents * totalDates)) * 100
   );
@@ -321,11 +324,15 @@ function buildDataForAttendanceTable(forMonthYear = 'All Months') {
       averageAttendancePercantage +
       '%)'
   );
+
+  // END of All Students Date wise attendance percentage
+
   buildAttendanceTable();
 }
 
 function buildAttendanceTable() {
   $('#datatable').bootstrapTable('destroy');
+
   let column = new Array();
   column.push({
     field: 'sn',
@@ -334,6 +341,7 @@ function buildAttendanceTable() {
     align: 'center',
     valign: 'middle',
     footerFormatter: '-',
+    switchable: false,
   });
   column.push({
     field: 'regNo',
@@ -341,8 +349,8 @@ function buildAttendanceTable() {
     sortable: true,
     align: 'center',
     valign: 'middle',
-    cellStyle: "CSS{ color: 'red' }",
     footerFormatter: 'Total Attendance',
+    switchable: false,
   });
   column.push({
     field: 'name',
@@ -351,6 +359,7 @@ function buildAttendanceTable() {
     align: 'center',
     valign: 'middle',
     footerFormatter: '-',
+    switchable: false,
   });
 
   column.push({
@@ -360,7 +369,9 @@ function buildAttendanceTable() {
     align: 'center',
     valign: 'middle',
     footerFormatter: '-',
+    switchable: false,
   });
+  //Each Date in a column
   for (let i = 0; i < allDates.length; i++) {
     let tempdateAlter = allDates[i].split('/');
     tempdateAlter.splice(0, 2, tempdateAlter[1], tempdateAlter[0]);
@@ -374,13 +385,45 @@ function buildAttendanceTable() {
       footerFormatter: attnTotalMap.get(allDates[i]),
     });
   }
+
+  //END
+  function totalAttnPercentFormatter(data) {
+    let totalDays = 0,
+      totalStudents = data.length,
+      allTotalAttn = 0,
+      eachStudentAttnPercent;
+
+    for (let i = 0; i < data.length; i++) {
+      //let P = data[i][field]; //3/25 (12%)
+      eachStudentAttnPercent = data[i]['Present %'];
+      var K = eachStudentAttnPercent.split(' ')[0].split('/');
+      totalDays = K[1];
+      allTotalAttn += parseInt(K[0]);
+    }
+    //alert('Total Days ' + totalDays + ' Total Students' + totalStudents);
+    let perc = Math.round((allTotalAttn / (totalStudents * totalDays)) * 100);
+    return (
+      allTotalAttn +
+      '/' +
+      '(' +
+      totalStudents +
+      '*' +
+      totalDays +
+      ') =(' +
+      perc +
+      '%)'
+    );
+    //return attnTotalMap.get('Present %');
+  }
+
   column.push({
     field: 'Present %',
     title: 'Present %',
     sortable: true,
     align: 'center',
     valign: 'middle',
-    footerFormatter: attnTotalMap.get('Present %'),
+    footerFormatter: totalAttnPercentFormatter,
+    //switchable: false,
   });
   /*  var select = document.getElementById('months');
   for (var i = 0; i < availMonths.length; i++) {
@@ -390,7 +433,6 @@ function buildAttendanceTable() {
     el.value = optn;
     select.appendChild(el);
   } */
-
   if (dataForTable.length > 0) {
     var T = document.getElementById('parsed_csv_list');
     T.style.display = 'block';
@@ -399,46 +441,129 @@ function buildAttendanceTable() {
     document.getElementById('monthpicker').style.display = 'none';
     //$('#parsed_csv_list').html(table);
     //$('#datatable').html(table);
-    $('#datatable').bootstrapTable({
-      columns: column,
-      data: dataForTable,
-      search: true,
-      showFullscreen: true,
-      fixedColumns: true,
-      fixedNumber: +2,
-      iconSize: 'sm',
-      cellStyle: 'text-color: Blue;',
-    });
+    let $table = $('#datatable');
+    $('#datatable')
+      .bootstrapTable('destroy')
+      .bootstrapTable({
+        columns: column,
+        data: dataForTable,
+        search: true,
+        showFullscreen: true,
+        fixedColumns: true,
+        fixedNumber: +2,
+        iconSize: 'sm',
+        cellStyle: 'text-color: Blue;',
+        onColumnSwitch: function (field, checked) {
+          //alert(field + ' ' + String.raw`${field}`);
+          //let checked = checked;
+
+          $table.bootstrapTable('showLoading');
+          let data = $table.bootstrapTable('getData');
+          //let j = JSON.stringify(data);
+          //alert(j);
+          //var att = j.map((d) => d[field]);
+          //alert(att);
+          let uniqueIdMap = new Map();
+          for (var i = 0; i < data.length; i++) {
+            let P = data[i][field]; //3/25 (12%)
+            let R = data[i]['Present %'];
+            let K = R.split(' ')[0].split('/');
+            if (!checked) {
+              if (P === 'P') {
+                K[0] = K[0] - 1;
+              }
+              K[1] = K[1] - 1;
+            } else {
+              if (P === 'P') {
+                K[0] = parseInt(K[0]) + 1;
+              }
+              K[1] = parseInt(K[1]) + 1;
+            }
+            let percnt = Math.round((K[0] / K[1]) * 100);
+            let v = K[0] + '/' + K[1] + ' (' + percnt + '%)';
+            uniqueIdMap.set(data[i]['bioId'], v);
+            /* $table.bootstrapTable('updateCell', {
+              index: i,
+              field: 'Present %',
+              value: v,
+              reinit: false,
+            });
+            console.log(i + ' ' + v); */
+          }
+
+          for (let [key, value] of uniqueIdMap) {
+            $table.bootstrapTable('updateCellByUniqueId', {
+              id: key,
+              field: 'Present %',
+              value: value,
+              reinit: false,
+            });
+            console.log(key + ' = ' + value);
+          }
+
+          $table.bootstrapTable('hideLoading');
+        },
+      });
   } else {
     var T = document.getElementById('noData');
     T.style.display = 'block';
     var P = document.getElementById('parsed_csv_list');
     P.style.display = 'none';
+    var k = document.getElementById('monthpicker');
+    k.style.display = 'none';
   }
 
   //$('#datatable').DataTable();
 }
 
-function readBioCSV(results) {
+function readBioCSV(results, fileType = '.csv') {
+  //console.log(results.data);
+  alert(results.data.length + '\n' + results.data);
   bioData = new Map();
   availMonths = new Array();
   idDateTimeMap = new Map();
+  let filecheck = 1;
+  if (fileType === '.dat') {
+    filecheck = 0;
+  }
 
-  for (i = 0; i < results.data.length - 1; i++) {
+  for (let i = 0; i < results.data.length - filecheck; i++) {
+    if (i == 1) console.log(results);
     var row = results.data[i];
-    var cells = row.join(',').split(',');
+    //console.log(row);
+    let cells = row.join(',').split(',');
+    //console.log(cells);
     cells.pop();
     cells.pop();
     cells.pop();
     cells.pop();
-    var d = cells[1].split('-');
-    d = [d[1], d[0], d[2]].join('/');
+    //console.log(cells);
+    let d;
+    if (cells[1].includes('/')) {
+      d = cells[1].split('/');
+      d = [d[1], d[0], d[2]].join('/');
+    } else if (cells[1].includes('-')) {
+      d = cells[1].split('-');
+      //d = cells[1].split('-');
+      //console.log(d);
+      if (fileType === '.dat') {
+        //k = d[2].split(' ');
+        //alert(d[0]+"\n"+d[1]+"\n"+k[0]+"\n"+k[1]);
+        //d = [d[1], k[0], d[0]].join('/') + ' ' + k[1];
+        d = [d[1], d[0], d[2]].join('/');
+      } else {
+        //mm/dd/yyyy hh:mm:ss
+        d = [d[1], d[0], d[2]].join('/');
+      }
+    }
+
+    //console.log(d);
     cells[1] = d;
 
     if (firstDate == null) {
       firstDate = d.split(' ')[0];
     }
-
+    //alert('FirstDate:' + firstDate);
     if (
       !availMonths.includes(
         monthMap[new Date(d).getMonth()] + ' ' + new Date(d).getFullYear()
@@ -459,7 +584,8 @@ function readBioCSV(results) {
         new Array(d.split(' ')[1])
       );
     }
-
+    //alert(cells[0]);
+    //alert(typeof cells[0]);
     if (bioData.has(parseInt(cells[0]))) {
       if (!bioData.get(parseInt(cells[0])).includes(cells[1].split(' ')[0])) {
         bioData.get(parseInt(cells[0])).push(cells[1].split(' ')[0]);
@@ -470,8 +596,10 @@ function readBioCSV(results) {
     } else {
       bioData.set(parseInt(cells[0]), new Array(cells[1].split(' ')[0]));
     }
+    //alert('Data For ' + cells[0] + ' : ' + bioData.get(parseInt(cells[0])));
     lastDate = d.split(' ')[0];
   }
+  //alert('BioData: ' + 'BioDataLoaded' + bioData.size);
   var select = document.getElementById('months');
   for (var i = 0; i < availMonths.length; i++) {
     var optn = availMonths[i];
@@ -481,6 +609,7 @@ function readBioCSV(results) {
     select.appendChild(el);
   }
   //console.log(bioData);
+  //alert('Total BioData: ' + bioData.size);
 }
 
 function readIdCSV(results) {
@@ -514,7 +643,7 @@ function studentPresentDates() {
   for (j = 0; j < idData.length; j++) {
     for (i = 0; i < bioData.length; i++) {
       if (bioData[i][0] == idData[0][2]) {
-        console.log(bioData[i]);
+        //console.log(bioData[i]);
         bioIdDateMap.set(idData[i][0], bioData[i]);
       }
     }
