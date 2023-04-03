@@ -451,6 +451,7 @@ function buildAttendanceTable() {
         showFullscreen: true,
         fixedColumns: true,
         fixedNumber: +2,
+        fixedRightNumber: +1
         iconSize: 'sm',
         cellStyle: 'text-color: Blue;',
         onColumnSwitch: function (field, checked) {
