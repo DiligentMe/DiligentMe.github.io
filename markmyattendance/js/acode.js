@@ -11,6 +11,7 @@ let attnStudentWiseMap;
 let firstDate = null;
 let lastDate = null;
 let filteredDate = null;
+let overAllPercentage = null;
 let dstHolidays = {
   0: ['01/01/2023', '01/15/2023', '01/26/2023'],
   1: ['02/05/2023', '02/18/2023'],
@@ -146,6 +147,8 @@ const daysMap = {
   6: 'Sat',
 };
 
+let totalAttenCountAfterDateDrop = -1;
+
 function getDates(startDate, stopDate) {
   var dateArray = [];
   var currentDate = moment(startDate);
@@ -211,7 +214,8 @@ function buildDataForAttendanceTable(forMonthYear = 'All Months') {
   //buildMonthCalendarWorkingDays();
   //alert(forMonthYear);
   document.getElementById('monthpicker').style.display = 'inline-block';
-
+  var T = document.getElementById('pbar');
+  T.style.display = 'block';
   allDates = new Array();
 
   if (forMonthYear == 'All Months') {
@@ -224,10 +228,10 @@ function buildDataForAttendanceTable(forMonthYear = 'All Months') {
         availMonths[availMonths.length - 1]
       );
     document.getElementById('tableTitle').innerText =
-      'Attendance for ' + monthYearForTableTitle;
+      'Attendance of ' + monthYearForTableTitle;
   } else {
     document.getElementById('tableTitle').innerText =
-      'Attendance for ' + forMonthYear;
+      'Attendance of ' + forMonthYear;
     var month = forMonthYear.split(' ')[0];
     var year = forMonthYear.split(' ')[1];
     let fDate =
@@ -277,9 +281,11 @@ function buildDataForAttendanceTable(forMonthYear = 'All Months') {
       else absent++;
       //console.log(oneStudentData, present, absent, allDates[j]);
     }
-    percentage = Math.round((present / (present + absent)) * 100);
-    oneStudentData['Present %'] =
-      present + '/' + (present + absent) + ' (' + percentage + '%)';
+    let percentage = Math.round((present / (present + absent)) * 100);
+    /*  oneStudentData['Present %'] =
+      present + '/' + (present + absent) + ' (' + percentage + '%)'; */
+    oneStudentData['Present %'] = present;
+    oneStudentData['Total %'] = percentage;
     dataForTable.push(oneStudentData);
     //console.log(dataForTable);
   }
@@ -305,15 +311,17 @@ function buildDataForAttendanceTable(forMonthYear = 'All Months') {
 
     attnTotalMap.set(
       allDates[i],
-      present + '/' + (present + absent) + ' (' + percentage + '%)'
+      percentage.toString() //+ '/' + (present + absent) + ' (' + percentage + '%)'
     );
+
     //console.log(allDates[i], present, absent);
+    //console.log(present);
   }
   let averageAttendancePercantage = Math.round(
     (totalStudentsPresent / (totalStudents * totalDates)) * 100
   );
 
-  attnTotalMap.set(
+  /*  attnTotalMap.set(
     'Present %',
     totalStudentsPresent +
       '/(' +
@@ -323,7 +331,10 @@ function buildDataForAttendanceTable(forMonthYear = 'All Months') {
       ') = (' +
       averageAttendancePercantage +
       '%)'
-  );
+  ); */
+
+  attnTotalMap.set('Present %', totalStudentsPresent);
+  attnTotalMap.set('Total %', averageAttendancePercantage);
 
   // END of All Students Date wise attendance percentage
 
@@ -349,7 +360,7 @@ function buildAttendanceTable() {
     sortable: true,
     align: 'center',
     valign: 'middle',
-    footerFormatter: 'Total Attendance',
+    footerFormatter: 'Daily Attendance %',
     switchable: false,
   });
   column.push({
@@ -380,6 +391,7 @@ function buildAttendanceTable() {
     column.push({
       field: allDates[i],
       title: tempdateAlter,
+      sortable: true,
       align: 'center',
       valign: 'middle',
       footerFormatter: attnTotalMap.get(allDates[i]),
@@ -387,44 +399,26 @@ function buildAttendanceTable() {
   }
 
   //END
-  function totalAttnPercentFormatter(data) {
-    let totalDays = 0,
-      totalStudents = data.length,
-      allTotalAttn = 0,
-      eachStudentAttnPercent;
-
-    for (let i = 0; i < data.length; i++) {
-      //let P = data[i][field]; //3/25 (12%)
-      eachStudentAttnPercent = data[i]['Present %'];
-      var K = eachStudentAttnPercent.split(' ')[0].split('/');
-      totalDays = K[1];
-      allTotalAttn += parseInt(K[0]);
-    }
-    //alert('Total Days ' + totalDays + ' Total Students' + totalStudents);
-    let perc = Math.round((allTotalAttn / (totalStudents * totalDays)) * 100);
-    return (
-      allTotalAttn +
-      '/' +
-      '(' +
-      totalStudents +
-      '*' +
-      totalDays +
-      ') =(' +
-      perc +
-      '%)'
-    );
-    //return attnTotalMap.get('Present %');
-  }
 
   column.push({
     field: 'Present %',
-    title: 'Present %',
+    title: 'Total' + ' (' + allDates.length + ')',
     sortable: true,
     align: 'center',
     valign: 'middle',
     footerFormatter: totalAttnPercentFormatter,
-    //switchable: false,
   });
+
+  column.push({
+    field: 'Total %',
+    title: '%',
+    sortable: true,
+    align: 'center',
+    valign: 'middle',
+    footerFormatter: percentageFormatter,
+    switchable: false,
+  });
+
   /*  var select = document.getElementById('months');
   for (var i = 0; i < availMonths.length; i++) {
     var optn = availMonths[i];
@@ -439,8 +433,11 @@ function buildAttendanceTable() {
     var P = document.getElementById('noData');
     P.style.display = 'none';
     document.getElementById('monthpicker').style.display = 'none';
+
     //$('#parsed_csv_list').html(table);
     //$('#datatable').html(table);
+    totalAttenCountAfterDateDrop = column.length - 6;
+    let tAcAdD = totalAttenCountAfterDateDrop;
     let $table = $('#datatable');
     $('#datatable')
       .bootstrapTable('destroy')
@@ -454,45 +451,116 @@ function buildAttendanceTable() {
         fixedRightNumber: +1,
         iconSize: 'sm',
         cellStyle: 'text-color: Blue;',
+        onClickCell: function (field, value, row, $element) {
+          //$('.clicked-text').text($element.text());
+          //$('.clicked-field').text(field);
+          //$('.clicked-value').text(value);
+          //$('.alert').removeClass('hidden');
+          if (value === '') {
+          } else if (!field.includes('/')) {
+          } else {
+            /*  alert(
+              field + '\n' + $element.parent().data('index') + '\n' + row.bioId
+            ); */
+            console.log(row.bioId + ',' + field);
+            var inOutTime = idDateTimeMap.get(String(row.bioId + ',' + field));
+            var inTime, outTime;
+            if (inOutTime.length > 0) {
+              inTime = inOutTime[0];
+              outTime = inOutTime[inOutTime.length - 1];
+            }
+            //alert('In Time: ' + inTime + '\n' + 'Out Time: ' + outTime);
+            var div = document.createElement('div');
+            div.className = 'popup';
+            var span = document.createElement('span');
+            span.className = 'popuptext';
+            span.id = 'mypopup';
+            span.innerText =
+              'In Time: ' + inTime + '\n' + 'Out Time: ' + outTime;
+            div.appendChild(span);
+            console.log('================================');
+            $element.append(div);
+            span.classList.toggle('show');
+            setTimeout(function () {
+              div.remove();
+            }, 5000);
+          }
+        },
         onColumnSwitch: function (field, checked) {
           //alert(field + ' ' + String.raw`${field}`);
           //let checked = checked;
-
-         // $table.bootstrapTable('showLoading');
-          let data = $table.bootstrapTable('getData');
-          //let j = JSON.stringify(data);
-          //alert(j);
-          //var att = j.map((d) => d[field]);
-          //alert(att);
-          let uniqueIdMap = new Map();
-          for (var i = 0; i < data.length; i++) {
-            let P = data[i][field]; //3/25 (12%)
-            let R = data[i]['Present %'];
-            let K = R.split(' ')[0].split('/');
-            if (!checked) {
-              if (P === 'P') {
-                K[0] = K[0] - 1;
-              }
-              K[1] = K[1] - 1;
+          var T = document.getElementById('pbar');
+          T.style.display = 'block';
+          if (field === 'Present %') {
+            var T = document.getElementById('pbar');
+            T.style.display = 'none';
+          } else if (field === 'Total %') {
+            var T = document.getElementById('pbar');
+            T.style.display = 'none';
+          } else {
+            // $table.bootstrapTable('showLoading');
+            let data = $table.bootstrapTable('getData');
+            //let j = JSON.stringify(data);
+            //alert(j);
+            //var att = j.map((d) => d[field]);
+            //alert(att);
+            if (checked) {
+              tAcAdD = parseInt(tAcAdD) + 1;
             } else {
-              if (P === 'P') {
-                K[0] = parseInt(K[0]) + 1;
-              }
-              K[1] = parseInt(K[1]) + 1;
+              tAcAdD = parseInt(tAcAdD) - 1;
             }
-            let percnt = Math.round((K[0] / K[1]) * 100);
-            let v = K[0] + '/' + K[1] + ' (' + percnt + '%)';
-            //uniqueIdMap.set(data[i]['bioId'], v);
-            $table.bootstrapTable('updateCell', {
-              index: i,
-              field: 'Present %',
-              value: v,
-              reinit: false,
-            });
-           // console.log(i + ' ' + v); 
-          }
+            totalAttenCountAfterDateDrop = tAcAdD;
+            let uniqueIdMap = new Map();
+            let K = new Array();
+            for (var i = 0; i < data.length; i++) {
+              let P = data[i][field];
+              let R = data[i]['Present %'];
+              // K = R.split(' ')[0].split('/'); //3/25 (12%)
+              K[0] = R;
+              //K[1] = Object.keys(data[i]).length - 6; //
+              //console.log(tAcAdD);
+              if (!checked) {
+                if (P === 'P') {
+                  K[0] = K[0] - 1;
+                }
+                //K[1] = K[1] - 1;
+                //tAcAdD = parseInt(tAcAdD) - 1;
+              } else {
+                if (P === 'P') {
+                  K[0] = parseInt(K[0]) + 1;
+                }
+                //K[1] = parseInt(K[1]) + 1;
+                //tAcAdD = parseInt(tAcAdD) + 1;
+              }
+              //let percnt = Math.round((K[0] / K[1]) * 100);
+              let percnt = Math.round((K[0] / tAcAdD) * 100);
+              //let v = K[0] + '/' + K[1] + ' (' + percnt + '%)';
+              //uniqueIdMap.set(data[i]['bioId'], v);
+              $table.bootstrapTable('updateCell', {
+                index: i,
+                field: 'Present %',
+                value: K[0],
+                reinit: false,
+              });
+              //console.log(i + ' = ' + v);
+              $table.bootstrapTable('updateCell', {
+                index: i,
+                field: 'Total %',
+                value: percnt,
+                reinit: false,
+              });
+              //console.log(i + ' = ' + percnt);
+              // console.log(i + ' ' + v);
+            }
 
-         /* for (let [key, value] of uniqueIdMap) {
+            $table.bootstrapTable('updateColumnTitle', {
+              field: 'Present %',
+              title: 'Total' + ' (' + tAcAdD + ')',
+            });
+
+            var T = document.getElementById('pbar');
+            T.style.display = 'none';
+            /* for (let [key, value] of uniqueIdMap) {
             $table.bootstrapTable('updateCellByUniqueId', {
               id: key,
               field: 'Present %',
@@ -502,9 +570,12 @@ function buildAttendanceTable() {
             //console.log(key + ' = ' + value);
           }*/
 
-          //$table.bootstrapTable('hideLoading');
+            //$table.bootstrapTable('hideLoading');
+          }
         },
       });
+    var T = document.getElementById('pbar');
+    T.style.display = 'none';
   } else {
     var T = document.getElementById('noData');
     T.style.display = 'block';
@@ -515,6 +586,80 @@ function buildAttendanceTable() {
   }
 
   //$('#datatable').DataTable();
+}
+
+function percentageFormatter(data) {
+  if (overAllPercentage) {
+    return overAllPercentage;
+  } else {
+    console.log('in percentage');
+    let totalDays = data[0].length - 6,
+      totalStudents = data.length,
+      allTotalAttn = 0,
+      eachStudentAttnPercent;
+
+    for (let i = 0; i < data.length; i++) {
+      //let P = data[i][field]; //3/25 (12%)
+      eachStudentAttnPercent = data[i]['Present %'];
+      var K = eachStudentAttnPercent; //.split(' ')[0].split('/');
+      //console.log(K);
+      //totalDays = K; //K[1];
+      //allTotalAttn += parseInt(K[0]);
+      allTotalAttn += K;
+    }
+    //alert('Total Days ' + totalDays + ' Total Students' + totalStudents);
+    let perc = Math.round((allTotalAttn / (totalStudents * totalDays)) * 100);
+    return perc;
+  }
+}
+
+function totalAttnPercentFormatter(data) {
+  let totalDays = Object.keys(data[0]).length - 6,
+    totalStudents = data.length,
+    allTotalAttn = 0,
+    eachStudentAttnPercent;
+
+  for (let i = 0; i < data.length; i++) {
+    //let P = data[i][field]; //3/25 (12%)
+    eachStudentAttnPercent = data[i]['Present %'];
+    var K = eachStudentAttnPercent; //.split(' ')[0].split('/');
+    //totalDays = K; //K[1];
+    //allTotalAttn += parseInt(K[0]);
+    allTotalAttn += K;
+  }
+  /* console.log(
+    allTotalAttn,
+    data[0],
+    totalStudents,
+    Object.keys(data[0]).length
+  ); */
+  //alert('Total Days ' + totalDays + ' Total Students' + totalStudents);
+  let perc = Math.round(
+    (allTotalAttn / (totalStudents * totalAttenCountAfterDateDrop)) * 100
+  );
+  /*console.log(
+    allTotalAttn,
+    ' ',
+    totalStudents,
+    ' ',
+    totalDays,
+    ' ',
+    totalAttenCountAfterDateDrop
+  );*/
+  overAllPercentage = perc;
+  /*  return (
+    allTotalAttn +
+    '/' +
+    '(' +
+    totalStudents +
+    '*' +
+    totalDays +
+    ') =(' +
+    perc +
+    '%)'
+  ); */
+  return allTotalAttn;
+  //return attnTotalMap.get('Present %');
 }
 
 function readBioCSV(results, fileType = '.csv') {
@@ -609,6 +754,7 @@ function readBioCSV(results, fileType = '.csv') {
     el.value = optn;
     select.appendChild(el);
   }
+
   //console.log(bioData);
   //alert('Total BioData: ' + bioData.size);
 }
