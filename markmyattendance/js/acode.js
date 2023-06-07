@@ -754,7 +754,7 @@ function readBioCSV(results, fileType = '.csv') {
     el.value = optn;
     select.appendChild(el);
   }
-
+  
   //console.log(bioData);
   //alert('Total BioData: ' + bioData.size);
 }
