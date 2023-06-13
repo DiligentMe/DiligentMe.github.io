@@ -12,6 +12,8 @@ let firstDate = null;
 let lastDate = null;
 let filteredDate = null;
 let overAllPercentage = null;
+let dataAfterSorting = null;
+let $table = null;
 let dstHolidays = {
   0: ['01/01/2023', '01/15/2023', '01/26/2023'],
   1: ['02/05/2023', '02/18/2023'],
@@ -213,7 +215,7 @@ function getKeyByValue(object, value) {
 function buildDataForAttendanceTable(forMonthYear = 'All Months') {
   //buildMonthCalendarWorkingDays();
   //alert(forMonthYear);
-  document.getElementById('monthpicker').style.display = 'inline-block';
+  //document.getElementById('monthpicker').style.display = 'inline-block';
   var T = document.getElementById('pbar');
   T.style.display = 'block';
   allDates = new Array();
@@ -229,6 +231,14 @@ function buildDataForAttendanceTable(forMonthYear = 'All Months') {
       );
     document.getElementById('tableTitle').innerText =
       'Attendance of ' + monthYearForTableTitle;
+  } else if (forMonthYear == 'Custom Range') {
+    var inp = document.createElement('input');
+    inp.type = 'text';
+    inp.name = 'daterange';
+    inp.value = '01/01/2015 - 01/31/2015';
+    document.getElementById('months').appendChild(inp);
+    //$('input[name="daterange"]').daterangepicker({});
+    //console.log('Custom Range Selected !');
   } else {
     document.getElementById('tableTitle').innerText =
       'Attendance of ' + forMonthYear;
@@ -282,6 +292,9 @@ function buildDataForAttendanceTable(forMonthYear = 'All Months') {
       //console.log(oneStudentData, present, absent, allDates[j]);
     }
     let percentage = Math.round((present / (present + absent)) * 100);
+    if (Number.isNaN(percentage))
+      //console.log(Number.isNaN(perc));
+      percentage = 0;
     /*  oneStudentData['Present %'] =
       present + '/' + (present + absent) + ' (' + percentage + '%)'; */
     oneStudentData['Present %'] = present;
@@ -343,7 +356,8 @@ function buildDataForAttendanceTable(forMonthYear = 'All Months') {
 
 function buildAttendanceTable() {
   $('#datatable').bootstrapTable('destroy');
-
+  document.getElementById('inOutTime').checked = false;
+  document.getElementById('appt').value = '--:--';
   let column = new Array();
   column.push({
     field: 'sn',
@@ -394,7 +408,7 @@ function buildAttendanceTable() {
       sortable: true,
       align: 'center',
       valign: 'middle',
-      footerFormatter: attnTotalMap.get(allDates[i]),
+      footerFormatter: attnTotalOfADay, //attnTotalOfADay(i),
     });
   }
 
@@ -407,6 +421,7 @@ function buildAttendanceTable() {
     align: 'center',
     valign: 'middle',
     footerFormatter: totalAttnPercentFormatter,
+    switchable: false,
   });
 
   column.push({
@@ -432,13 +447,13 @@ function buildAttendanceTable() {
     T.style.display = 'block';
     var P = document.getElementById('noData');
     P.style.display = 'none';
-    document.getElementById('monthpicker').style.display = 'none';
-
+    //document.getElementById('monthpicker').style.display = 'none';
+    let timeChedked = false;
     //$('#parsed_csv_list').html(table);
     //$('#datatable').html(table);
     totalAttenCountAfterDateDrop = column.length - 6;
     let tAcAdD = totalAttenCountAfterDateDrop;
-    let $table = $('#datatable');
+    $table = $('#datatable');
     $('#datatable')
       .bootstrapTable('destroy')
       .bootstrapTable({
@@ -448,119 +463,162 @@ function buildAttendanceTable() {
         showFullscreen: true,
         fixedColumns: true,
         fixedNumber: +2,
-        fixedRightNumber: +1,
+        fixedRightNumber: +2,
         iconSize: 'sm',
         cellStyle: 'text-color: Blue;',
+
+        onExportStarted: function () {
+          if (document.getElementById('inOutTime').checked) {
+            timeChedked = true;
+            document.getElementById('inOutTime').click();
+          }
+        },
+
+        onExportSaved: function () {
+          if (timeChedked) {
+            timeChedked = false;
+            document.getElementById('inOutTime').click();
+          }
+        },
+
         onClickCell: function (field, value, row, $element) {
-          //$('.clicked-text').text($element.text());
-          //$('.clicked-field').text(field);
-          //$('.clicked-value').text(value);
-          //$('.alert').removeClass('hidden');
-          if (value === '') {
-          } else if (!field.includes('/')) {
+          if (document.getElementById('inOutTime').checked) {
           } else {
-            /*  alert(
+            if (value === '') {
+            } else if (!field.includes('/')) {
+            } else {
+              /*  alert(
               field + '\n' + $element.parent().data('index') + '\n' + row.bioId
             ); */
-            console.log(row.bioId + ',' + field);
-            var inOutTime = idDateTimeMap.get(String(row.bioId + ',' + field));
-            var inTime, outTime;
-            if (inOutTime.length > 0) {
-              inTime = inOutTime[0];
-              outTime = inOutTime[inOutTime.length - 1];
+              // console.log(row.bioId + ',' + field);
+              var inOutTime = idDateTimeMap.get(
+                String(row.bioId + ',' + field)
+              );
+              var inTime, outTime;
+              if (inOutTime.length > 0) {
+                inTime = inOutTime[0];
+                outTime = inOutTime[inOutTime.length - 1];
+              }
+              //alert('In Time: ' + inTime + '\n' + 'Out Time: ' + outTime);
+              var div = document.createElement('div');
+              div.className = 'popup';
+              var span = document.createElement('span');
+              span.className = 'popuptext';
+              span.id = 'mypopup';
+              span.innerText =
+                'In Time: ' + inTime + '\n' + 'Out Time: ' + outTime;
+              div.appendChild(span);
+              console.log('================================');
+              $element.append(div);
+              span.classList.toggle('show');
+              setTimeout(function () {
+                div.remove();
+              }, 2000);
             }
-            //alert('In Time: ' + inTime + '\n' + 'Out Time: ' + outTime);
-            var div = document.createElement('div');
-            div.className = 'popup';
-            var span = document.createElement('span');
-            span.className = 'popuptext';
-            span.id = 'mypopup';
-            span.innerText =
-              'In Time: ' + inTime + '\n' + 'Out Time: ' + outTime;
-            div.appendChild(span);
-            console.log('================================');
-            $element.append(div);
-            span.classList.toggle('show');
-            setTimeout(function () {
-              div.remove();
-            }, 5000);
           }
+        },
+        onSort: function (name, order) {
+          let data = $table.bootstrapTable('getData');
+          dataAfterSorting = null;
+          dataAfterSorting = data;
+          //console.log(data);
+          //console.log(name + ' ' + order);
         },
         onColumnSwitch: function (field, checked) {
           //alert(field + ' ' + String.raw`${field}`);
           //let checked = checked;
-          var T = document.getElementById('pbar');
+          let T = document.getElementById('pbar');
           T.style.display = 'block';
-          if (field === 'Present %') {
-            var T = document.getElementById('pbar');
-            T.style.display = 'none';
-          } else if (field === 'Total %') {
-            var T = document.getElementById('pbar');
-            T.style.display = 'none';
-          } else {
-            // $table.bootstrapTable('showLoading');
-            let data = $table.bootstrapTable('getData');
-            //let j = JSON.stringify(data);
-            //alert(j);
-            //var att = j.map((d) => d[field]);
-            //alert(att);
-            if (checked) {
-              tAcAdD = parseInt(tAcAdD) + 1;
+          setTimeout(function () {
+            if (field === 'Present %') {
+              //var T = document.getElementById('pbar');
+              T.style.display = 'none';
+            } else if (field === 'Total %') {
+              //var T = document.getElementById('pbar');
+              T.style.display = 'none';
             } else {
-              tAcAdD = parseInt(tAcAdD) - 1;
-            }
-            totalAttenCountAfterDateDrop = tAcAdD;
-            let uniqueIdMap = new Map();
-            let K = new Array();
-            for (var i = 0; i < data.length; i++) {
-              let P = data[i][field];
-              let R = data[i]['Present %'];
-              // K = R.split(' ')[0].split('/'); //3/25 (12%)
-              K[0] = R;
-              //K[1] = Object.keys(data[i]).length - 6; //
-              //console.log(tAcAdD);
-              if (!checked) {
-                if (P === 'P') {
-                  K[0] = K[0] - 1;
-                }
-                //K[1] = K[1] - 1;
-                //tAcAdD = parseInt(tAcAdD) - 1;
+              // $table.bootstrapTable('showLoading');
+              let data = $table.bootstrapTable('getData');
+              // if (dataAfterSorting != null) data = dataAfterSorting;
+
+              //console.log(data);
+              //let j = JSON.stringify(data);
+              //alert(j);
+              //var att = j.map((d) => d[field]);
+              //alert(att);
+              if (checked) {
+                tAcAdD = parseInt(tAcAdD) + 1;
               } else {
-                if (P === 'P') {
-                  K[0] = parseInt(K[0]) + 1;
-                }
-                //K[1] = parseInt(K[1]) + 1;
-                //tAcAdD = parseInt(tAcAdD) + 1;
+                tAcAdD = parseInt(tAcAdD) - 1;
               }
-              //let percnt = Math.round((K[0] / K[1]) * 100);
-              let percnt = Math.round((K[0] / tAcAdD) * 100);
-              //let v = K[0] + '/' + K[1] + ' (' + percnt + '%)';
-              //uniqueIdMap.set(data[i]['bioId'], v);
-              $table.bootstrapTable('updateCell', {
-                index: i,
+              totalAttenCountAfterDateDrop = tAcAdD;
+              let uniqueIdMap = new Map();
+              let K = new Array();
+              for (var i = 0; i < data.length; i++) {
+                let P = data[i][field];
+                let R = data[i]['Present %'];
+                let serialnumber = data[i]['sn'];
+
+                // K = R.split(' ')[0].split('/'); //3/25 (12%)
+                K[0] = R;
+                //K[1] = Object.keys(data[i]).length - 6; //
+                //console.log(i + ' ' + field, '  ' + checked, ' ' + R);
+                if (!checked) {
+                  if (P.includes('P')) {
+                    K[0] = parseInt(K[0]) - 1;
+                  }
+                  //K[1] = K[1] - 1;
+                  //tAcAdD = parseInt(tAcAdD) - 1;
+                } else {
+                  if (P.includes('P')) {
+                    K[0] = parseInt(K[0]) + 1;
+                  }
+                  //K[1] = parseInt(K[1]) + 1;
+                  //tAcAdD = parseInt(tAcAdD) + 1;
+                }
+                //let percnt = Math.round((K[0] / K[1]) * 100);
+                let percnt = Math.round((K[0] / tAcAdD) * 100);
+                //console.log('Total Count %: ' + percnt);
+                //let v = K[0] + '/' + K[1] + ' (' + percnt + '%)';
+                //uniqueIdMap.set(data[i]['bioId'], v);
+                /*  $table.bootstrapTable('updateCell', {
+                  index: i,
+                  field: 'Present %',
+                  value: K[0],
+                  reinit: false,
+                }); */
+                /*  $table.bootstrapTable('updateCellByUniqueId', {
+                  id: serialnumber,
+                  field: 'Present %',
+                  value: K[0],
+                  reinit: false,
+                }); */
+                //console.log(i + '  ' + R + '  ' + K[0] + ' ' + 'updatedCell');
+                //console.log(i + ' = ' + v);
+                /* $table.bootstrapTable('updateCell', {
+                  index: i,
+                  field: 'Total %',
+                  value: percnt,
+                  reinit: false,
+                }); */
+                //console.log(i + ' = ' + percnt);
+                // console.log(i + ' ' + v);
+                /*****************New Code to refresh the table data ************/
+                data[i]['Present %'] = K[0];
+                data[i]['Total %'] = percnt;
+                /*End of refresh */
+              }
+              $('#datatable').bootstrapTable('load', data);
+
+              $table.bootstrapTable('updateColumnTitle', {
                 field: 'Present %',
-                value: K[0],
-                reinit: false,
+                title: 'Total' + ' (' + tAcAdD + ')',
               });
-              //console.log(i + ' = ' + v);
-              $table.bootstrapTable('updateCell', {
-                index: i,
-                field: 'Total %',
-                value: percnt,
-                reinit: false,
-              });
-              //console.log(i + ' = ' + percnt);
-              // console.log(i + ' ' + v);
-            }
 
-            $table.bootstrapTable('updateColumnTitle', {
-              field: 'Present %',
-              title: 'Total' + ' (' + tAcAdD + ')',
-            });
+              //var T = document.getElementById('pbar');
+              T.style.display = 'none';
 
-            var T = document.getElementById('pbar');
-            T.style.display = 'none';
-            /* for (let [key, value] of uniqueIdMap) {
+              /* for (let [key, value] of uniqueIdMap) {
             $table.bootstrapTable('updateCellByUniqueId', {
               id: key,
               field: 'Present %',
@@ -570,8 +628,9 @@ function buildAttendanceTable() {
             //console.log(key + ' = ' + value);
           }*/
 
-            //$table.bootstrapTable('hideLoading');
-          }
+              //$table.bootstrapTable('hideLoading');
+            }
+          }, 0);
         },
       });
     var T = document.getElementById('pbar');
@@ -581,23 +640,36 @@ function buildAttendanceTable() {
     T.style.display = 'block';
     var P = document.getElementById('parsed_csv_list');
     P.style.display = 'none';
-    var k = document.getElementById('monthpicker');
-    k.style.display = 'none';
+    //var k = document.getElementById('monthpicker');
+    //k.style.display = 'none';
   }
 
   //$('#datatable').DataTable();
 }
 
+function attnTotalOfADay(data) {
+  //return attnTotalMap.get(allDates[i]);
+  var field = this.field;
+  let count = 0;
+  let studentCount = data.length;
+  for (var j = 0; j < data.length; j++) {
+    if (!data[j][field].includes('P')) continue;
+    else count++;
+  }
+  return Math.round((count / studentCount) * 100);
+}
+
 function percentageFormatter(data) {
   if (overAllPercentage) {
+    //console.log(overAllPercentage);
     return overAllPercentage;
   } else {
-    console.log('in percentage');
-    let totalDays = data[0].length - 6,
+    //console.log('in percentage on NAN');
+    let totalDays = Object.keys(data[0]).length - 6,
       totalStudents = data.length,
       allTotalAttn = 0,
       eachStudentAttnPercent;
-
+    //console.log(data[0], data[0].length);
     for (let i = 0; i < data.length; i++) {
       //let P = data[i][field]; //3/25 (12%)
       eachStudentAttnPercent = data[i]['Present %'];
@@ -609,7 +681,12 @@ function percentageFormatter(data) {
     }
     //alert('Total Days ' + totalDays + ' Total Students' + totalStudents);
     let perc = Math.round((allTotalAttn / (totalStudents * totalDays)) * 100);
-    return perc;
+    //console.log(allTotalAttn, ' ', totalStudents, ' ', totalDays, ' ', perc);
+    //console.log(perc);
+    if (Number.isNaN(perc)) {
+      //console.log(Number.isNaN(perc));
+      return 0;
+    } else return perc;
   }
 }
 
@@ -637,6 +714,7 @@ function totalAttnPercentFormatter(data) {
   let perc = Math.round(
     (allTotalAttn / (totalStudents * totalAttenCountAfterDateDrop)) * 100
   );
+
   /*console.log(
     allTotalAttn,
     ' ',
@@ -647,6 +725,7 @@ function totalAttnPercentFormatter(data) {
     totalAttenCountAfterDateDrop
   );*/
   overAllPercentage = perc;
+  //console.log('Average % :' + overAllPercentage);
   /*  return (
     allTotalAttn +
     '/' +
@@ -658,6 +737,7 @@ function totalAttnPercentFormatter(data) {
     perc +
     '%)'
   ); */
+  //console.log(allTotalAttn);
   return allTotalAttn;
   //return attnTotalMap.get('Present %');
 }
@@ -754,7 +834,10 @@ function readBioCSV(results, fileType = '.csv') {
     el.value = optn;
     select.appendChild(el);
   }
-  
+  //var el = document.createElement('option');
+  //el.textContent = 'Custom Range';
+  //el.value = 'Custom Range';
+  //select.appendChild(el);
   //console.log(bioData);
   //alert('Total BioData: ' + bioData.size);
 }
@@ -781,7 +864,11 @@ function readIdCSV(results) {
     return a[0] - b[0];
   });
   //studentPresentDates();
+  //let T = document.getElementById('pbar');
+  //T.style.display = 'block';
+
   buildDataForAttendanceTable();
+
   //buildAttendanceTable();
 }
 
@@ -795,4 +882,158 @@ function studentPresentDates() {
       }
     }
   }
+}
+
+function showTime() {
+  //console.log(event.target.checked);
+  let checked = document.getElementById('inOutTime').checked;
+  let T = document.getElementById('pbar');
+  T.style.display = 'block';
+  if (checked) {
+    setTimeout(() => {
+      let data = $table.bootstrapTable('getData');
+      let keys = Object.keys(data[0]);
+      keys.splice(keys.indexOf('sn'), 1);
+      keys.splice(keys.indexOf('regNo'), 1);
+      keys.splice(keys.indexOf('bioId'), 1);
+      keys.splice(keys.indexOf('name'), 1);
+      keys.splice(keys.indexOf('Present %'), 1);
+      keys.splice(keys.indexOf('Total %'), 1);
+      //console.log(keys[0]);
+      //console.log(keys);
+      for (i in data) {
+        //console.log(data[i]['bioId']);
+        for (j in keys) {
+          if (data[i][keys[j]].includes('P')) {
+            let tt = idDateTimeMap.get(data[i]['bioId'] + ',' + keys[j]);
+            data[i][keys[j]] =
+              'P' +
+              '<div class="row" id="timeshow" style="font-size:0.85em; font-family: Georgia, Times, serif; margin:0em"><div class="col border border-light"><span style="color:green;">' +
+              tt[0].slice(0, -3) +
+              '</span></div><div class="col border border-light"> <span style="color:brown;">' +
+              tt[tt.length - 1].slice(0, -3) +
+              '</span></div></div>';
+            //console.log(data[i][keys[j]]);
+            //console.log(idDateTimeMap.get(data[i]['bioId'] + ',' + keys[j]));
+          }
+        }
+      }
+      $table.bootstrapTable('load', data);
+      T.style.display = 'none';
+    }, 0);
+  } else {
+    //var timeId = document.getElementById('timeshow');
+    const nodeList = document.querySelectorAll('#timeshow');
+    for (var i = 0; i < nodeList.length; i++) {
+      nodeList[i].remove();
+    }
+    setTimeout(() => {
+      let data = $table.bootstrapTable('getData');
+      let keys = Object.keys(data[0]);
+      keys.splice(keys.indexOf('sn'), 1);
+      keys.splice(keys.indexOf('regNo'), 1);
+      keys.splice(keys.indexOf('bioId'), 1);
+      keys.splice(keys.indexOf('name'), 1);
+      keys.splice(keys.indexOf('Present %'), 1);
+      keys.splice(keys.indexOf('Total %'), 1);
+      //console.log(keys[0]);
+      //console.log(keys);
+      for (i in data) {
+        //console.log(data[i]['bioId']);
+        for (j in keys) {
+          if (data[i][keys[j]].includes('P')) {
+            let tt = idDateTimeMap.get(data[i]['bioId'] + ',' + keys[j]);
+            data[i][keys[j]] = 'P';
+            //console.log(data[i][keys[j]]);
+            //console.log(idDateTimeMap.get(data[i]['bioId'] + ',' + keys[j]));
+          }
+        }
+      }
+      $table.bootstrapTable('load', data);
+      T.style.display = 'none';
+    }, 0);
+
+    //console.log($table.bootstrapTable('getData'));
+    //$table.bootstrapTable('load', $table.bootstrapTable('getData'));
+    //T.style.display = 'none';
+  }
+
+  //<div class="row"><div class="col-sm-6">10:11</div><div class="col-sm-6">12:19</div></div>
+}
+
+function filterOnEntryTime(entryTime) {
+  let T = document.getElementById('pbar');
+  T.style.display = 'block';
+  //console.log(entryTime);
+  setTimeout(() => {
+    let data = $table.bootstrapTable('getData');
+    let keys = Object.keys(data[0]);
+    keys.splice(keys.indexOf('sn'), 1);
+    keys.splice(keys.indexOf('regNo'), 1);
+    keys.splice(keys.indexOf('bioId'), 1);
+    keys.splice(keys.indexOf('name'), 1);
+    keys.splice(keys.indexOf('Present %'), 1);
+    keys.splice(keys.indexOf('Total %'), 1);
+    //console.log(keys[0]);
+    //console.log(keys);
+    for (i in data) {
+      //console.log(data[i]['bioId']);
+      for (j in keys) {
+        let tt = idDateTimeMap.get(data[i]['bioId'] + ',' + keys[j]);
+        if (data[i][keys[j]].includes('P')) {
+          if (
+            data[i][keys[j]].includes('P') &&
+            tt[0].slice(0, -3) > entryTime
+          ) {
+            data[i][keys[j]] = '';
+            let tt = data[i]['Present %'];
+            data[i]['Present %'] -= 1;
+            /* let tt1 = data[i]['Total %'];
+            let tt2 = Math.round((tt / tt1) * 100); */
+            data[i]['Total %'] = Math.round(((tt - 1) / keys.length) * 100);
+          } /*  else if (
+            dataForTable[i][keys[j]].includes('P') &&
+            tt[0].slice(0, -3) < entryTime
+          ) {
+            data[i][keys[j]] = 'P';
+            let tt = data[i]['Present %'];
+            data[i]['Present %'] += 1;
+            data[i]['Total %'] = Math.round(((tt + 1) / keys.length) * 100);
+          } */
+          /* data[i][keys[j]] =
+            'P' +
+            '<div class="row" id="timeshow" style="font-size:0.85em; font-family: Georgia, Times, serif; margin:0em"><div class="col border border-light">' +
+            tt[0].slice(0, -3) +
+            '</div><div class="col border border-light">' +
+            tt[tt.length - 1].slice(0, -3) +
+            '</div></div>'; */
+          //console.log(data[i][keys[j]]);
+          //console.log(idDateTimeMap.get(data[i]['bioId'] + ',' + keys[j]));
+        } else if (
+          !data[i][keys[j]].includes('P') &&
+          dataForTable[i][keys[j]].includes('P') &&
+          tt[0].slice(0, -3) < entryTime
+        ) {
+          let tt1 = data[i]['Present %'];
+          data[i]['Present %'] += 1;
+          data[i]['Total %'] = Math.round(((tt1 + 1) / keys.length) * 100);
+          if (document.getElementById('inOutTime').checked) {
+            data[i][keys[j]] =
+              'P' +
+              '<div class="row" id="timeshow" style="font-size:0.85em; font-family: Georgia, Times, serif; margin:0em"><div class="col border border-light"><span style="color:green;">' +
+              tt[0].slice(0, -3) +
+              '</span></div><div class="col border border-light"> <span style="color:brown;">' +
+              tt[tt.length - 1].slice(0, -3) +
+              '</span></div></div>';
+          } else {
+            data[i][keys[j]] = 'P';
+          }
+        } else if (entryTime == '--:--' || entryTime.includes('--')) {
+          console.log(entryTime);
+        }
+      }
+    }
+    $table.bootstrapTable('load', data);
+    T.style.display = 'none';
+  }, 0);
 }

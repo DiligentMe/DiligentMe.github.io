@@ -61,8 +61,20 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
   <script src="https://cdn.jsdelivr.net/npm/bs5-lightbox@1.8.3/dist/index.bundle.min.js"></script>
   <link rel="stylesheet" type="text/css">
+  <script type="text/javascript" src="//cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.js"></script>
+  <link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.css" />
   <title>Biometric Attendance Processor</title>
   <style>
+    html,
+    body {
+      max-width: 100%;
+      overflow-x: hidden;
+    }
+
+    .scrollable-element {
+      scrollbar-width: none;
+    }
+
     .table-condensed {
       font-size: 12px;
       font-family: Georgia, 'Times New Roman', Times, serif;
@@ -237,18 +249,40 @@
         style="font-family: Georgia, 'Times New Roman', Times, serif;">
       </div>
       <div id="toolbar" class="d-flex justify-content-start">
-        <select class="form-select form-select-sm" aria-label=".form-select-sm example" id="months"
-          onChange=" buildDataForAttendanceTable(this.value)">
-          <option selected>All Months</option>
-        </select>
-        <span class="spinner-border spinner-border-sm text-primary" id="monthpicker" role="status" aria-hidden="true"
-          style="display: none; padding:10px; margin-left: 5px;"></span>
+        <div>
+          <select class="form-select form-select-sm" aria-label=".form-select-sm example" id="months"
+            onChange="buildDataForAttendanceTable(this.value)">
+            <option selected>All Months</option>
+          </select>
+          <span class="spinner-border spinner-border-sm text-primary" id="monthpicker" role="status" aria-hidden="true"
+            style="display: none; padding:5px; margin-left: 5px;"></span>
+        </div>
+        <div class="form-check"
+          style=" margin-top: auto; margin-left: 25px; text-align: center; vertical-align: middle; align-items: center; font-family: Georgia, 'Times New Roman', Times, serif; ">
+          <input class="form-check-input" type="checkbox" value="" id="inOutTime" onchange="showTime()" />
+          <label class="form-check-label" for="inOutTime">
+            Show <span style="color:green;">In</span>/<span style="color:brown;">Out</span> Time
+          </label>
+        </div>
+        <div class="clear-input-container"
+          style=" margin-top: auto; margin-left: 25px; text-align: center; vertical-align: middle; align-items: center; font-family: Georgia, 'Times New Roman', Times, serif; ">
+          <input type="time" id="appt" name="appt" value='--:--' onchange="filterOnEntryTime(this.value)" />
+          <label for="appt"> Entry Time </label>
+        </div>
+        <!-- <div class="form-check" 
+          style=" margin-top: auto; margin-left: 25px; text-align: center; vertical-align: middle; align-items: center; font-family: Georgia, 'Times New Roman', Times, serif;">
+          <input class="form-check-input" type="checkbox" value="" id="outTime">
+          <label class="form-check-label" for="outTime">
+            Out Time
+          </label>
+        </div> -->
       </div>
+
       <table class='table w-auto text-nowrap table-condensed table-sm table-bordered'
         style='min-width:inherit; text-align: center;' id="datatable" data-show-columns="true" data-show-print="true"
         data-show-export="true" data-show-columns-toggle-all="false" data-minimum-count-columns="0"
         data-toggle="datatable" data-toolbar="#toolbar" data-show-footer="true" data-data-field="items" ,
-        data-unique-id='sn' , data-footer-style="footerStyle" data-unique-id="bioId">
+        data-unique-id="sn" , data-footer-style="footerStyle">
       </table>
     </div>
   </div>
@@ -283,12 +317,20 @@
       popup.classList.toggle("show");
     } */
 
+
     let bioDataFromBiometric = { data: [] };
     let fname;
     $(document).ready(function () {
       /*  $('#header').load('../header-ads.html');
         $('#footer').load('../footer-ads.html'); */
       //$('#example').DataTable();
+      /***********Show In Time & out Time ************/
+      $("#inOutTime").prop("checked", false);
+      //$("#outTime").prop("checked", true);
+
+      /***********End of End Time and Out Time*********************/
+
+
 
       /* Code to Read CSV File, Biometric Attendance Data */
       $('#submit-bio-attn').on("click", function (e) {
