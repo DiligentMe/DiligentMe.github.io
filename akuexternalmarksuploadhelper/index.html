@@ -229,6 +229,10 @@ If there is any issue, please report to: - <b>ashish@mitmuzaffarpur.org</b></pre
           95: "Ninety Five", 96: "Ninety Six", 97: "Ninety Seven", 98: "Ninety Eight", 99: "Ninety Nine", 100: "Hundred" };`;
         var mT = "var marksTable = document.getElementById('ctl00_mastercontentplaceholder_GridDetails');";
         var sC = "var studentsCount = document.getElementById('ctl00_mastercontentplaceholder_GridDetails').rows.length;";
+        var t = "let maxMarks = marksTable.rows[0].cells[3].innerText.split('(')[1].split(')')[0];";
+        var maxMarksScored = 'let maxGivenMarks=-1; for (var i =0;i<marks.length;i++){ if(maxGivenMarks < marks[i][3]) maxGivenMarks = marks[i][3];}';
+        var confirmationToProceed = "if(confirm('Maximum Marks Permitted: '+maxMarks + '\\nMaximum Marks Given: '+maxGivenMarks+'\\n\\nDo you want to proceed?') != true) {console.log('Marks was not entered, Please repaeat the steps with corrected marks!')} else {";
+       
         var f = `function findReg(regNo){
                   var R = [];
                   for (var i = 0 ; i<marks.length;i++){
@@ -258,8 +262,8 @@ If there is any issue, please report to: - <b>ashish@mitmuzaffarpur.org</b></pre
                   }
                 }
                 if(flag == 0){
-                  console.log("All Set, Good To Go !\\n*****Please Use Submit button on the AKU portal to save your data.*****\\n*****Please Crosscheck before Making Final Submission i.e before Principal's Approval*****");}`;
-                  return "\n".concat(words, "\n", mT, "\n", sC, "\n", f, "\n", l);
+                  console.log("All Set, Good To Go !\\n*****Please Use Submit button on the AKU portal to save your data.*****\\n*****Please Crosscheck before Making Final Submission i.e before Principal's Approval*****");}}`;
+        return "\n".concat(words, "\n", mT, "\n", sC, "\n", t, "\n", maxMarksScored + '\n' + confirmationToProceed + "\n" + f, "\n", l);
                 }
       });
 
