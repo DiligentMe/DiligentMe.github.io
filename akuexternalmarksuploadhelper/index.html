@@ -241,8 +241,13 @@ If there is any issue, please report to: - <b>ashish@mitmuzaffarpur.org</b></pre
         var mT = "var marksTable = document.getElementById('ctl00_mastercontentplaceholder_GridDetails');";
         var sC = "var studentsCount = document.getElementById('ctl00_mastercontentplaceholder_GridDetails').rows.length;";
         var t = "let maxMarks = marksTable.rows[0].cells[3].innerText.split('(')[1].split(')')[0];";
+        var examName = `var examName = document.getElementById('ctl00_mastercontentplaceholder_ddlExam').options[document.getElementById('ctl00_mastercontentplaceholder_ddlExam').selectedIndex].text;`;
+        var branchName = `var branchName = document.getElementById('ctl00_mastercontentplaceholder_ddlProgramme').options[document.getElementById('ctl00_mastercontentplaceholder_ddlProgramme').selectedIndex].text;`;
+        var semester = `var semester = document.getElementById('ctl00_mastercontentplaceholder_ddlSemester').options[document.getElementById('ctl00_mastercontentplaceholder_ddlSemester').selectedIndex].text;`;
+        var subjectName = `var subjectName = document.getElementById('ctl00_mastercontentplaceholder_ddlCourse').options[document.getElementById('ctl00_mastercontentplaceholder_ddlCourse').selectedIndex].text;`;
+     
         var maxMarksScored = 'let maxGivenMarks=-1; for (var i =0;i<marks.length;i++){ if(maxGivenMarks < marks[i][3]) maxGivenMarks = marks[i][3];}';
-        var confirmationToProceed = "if(confirm('Maximum Marks Permitted: '+maxMarks + '\\nMaximum Marks Given: '+maxGivenMarks+'\\n\\nDo you want to proceed?') != true) {console.log('Marks was not entered, Please repaeat the steps with corrected marks!')} else {";
+        var confirmationToProceed = "if(confirm('Exam Name - '+ examName+'\\nBranch Name - '+branchName+'\\n'+semester+'\\nSubject Name - '+subjectName+'\\n\\nMaximum Marks Permitted: '+maxMarks + '\\nMaximum Marks Given: '+maxGivenMarks+'\\n\\nDo you want to proceed?') != true) {console.log('Marks was not entered, Please repaeat the steps with corrected marks!'); alert('Marks was not entered, Please repaeat the steps with corrected marks!');} else {";
        
         var f = `function findReg(regNo){
                   var R = [];
@@ -276,7 +281,7 @@ If there is any issue, please report to: - <b>ashish@mitmuzaffarpur.org</b></pre
                 if(flag == 0){
                   console.log("All Set, Good To Go !\\n*****Please Use Submit button on the BEU portal to save your data.*****\\n*****Please Crosscheck before Making Final Submission i.e before Principal's Approval*****");
                   alert("All Set, Good To Go !\\n*****Please Use Submit button on the AKU portal to save your data.*****\\n*****Please Crosscheck before Making Final Submission i.e before Principal's Approval*****");}}`;
-        return "\n".concat(words, "\n", mT, "\n", sC, "\n", t, "\n", maxMarksScored + '\n' + confirmationToProceed + "\n" + f, "\n", l);
+        return "\n".concat(words, "\n", mT, "\n", sC, "\n", t, "\n", examName, "\n" + branchName + "\n" + semester + "\n" + subjectName + "\n" + maxMarksScored + '\n' + test + "\n" + confirmationToProceed + "\n" + f, "\n", l);
                 }
       });
 
