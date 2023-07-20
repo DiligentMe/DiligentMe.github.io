@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <!-- saved from url=(0055)http://js-tutorials.com/demos/read_csv_javascript_demo/ -->
 <html lang="en">
+
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
@@ -28,15 +29,17 @@
 
     <div id="header">
       <div style="padding-bootom:10px">
-<a href="https://hits.seeyoufarm.com"><img src="https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fdiligentme.github.io%2Fbeuinternalmarksuploadhelper%2F&count_bg=%2379C83D&title_bg=%23555555&icon=&icon_color=%23E7E7E7&title=hits&edge_flat=false"/></a>
+        <a href="https://hits.seeyoufarm.com"><img
+            src="https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fdiligentme.github.io%2Fbeuinternalmarksuploadhelper%2F&count_bg=%2379C83D&title_bg=%23555555&icon=&icon_color=%23E7E7E7&title=hits&edge_flat=false" /></a>
       </div>
     </div>
-      <h1>BEU Internal Marks Auto Fill</h1>
+    <h1>BEU Internal Marks Auto Fill</h1>
     <div class="well">
       <div class="row">
         <form class="form-inline">
           <div class="form-group">
-            <label for="files">Upload a CSV file of Marks-<a href="./TemplateFileInternalMarks.csv">(Click me to Download Template file)</a>:</label>
+            <label for="files">Upload a CSV file of Marks-<a href="./TemplateFileInternalMarks.csv">(Click me to
+                Download Template file)</a>:</label>
             <input type="file" id="files" class="form-control" accept=".csv" placeholder="Select a CSV File" required />
           </div>
           <div class="form-group">
@@ -44,7 +47,8 @@
           </div>
 
           <div class="form-group" id="codegen" style="display:none">
-            <button type="submit" id="generate-code" class="btn btn-primary">Click Me to Generate Code and Go to Next Step!</button>
+            <button type="submit" id="generate-code" class="btn btn-primary">Click Me to Generate Code and Go to Next
+              Step!</button>
           </div>
         </form>
       </div>
@@ -52,9 +56,10 @@
       </div>
       <div class="form-group shadow-textarea" id="gen_code_marks" style="display:none">
         <div class="highlight">
-          <pre ><code id="precode" class="language-javascript"></code></pre>
+          <pre><code id="precode" class="language-javascript"></code></pre>
         </div>
-        <button class="btn" data-clipboard-action="copy" data-clipboard-target="#precode" id="copyData"><span style="color:blue">Click Me to Copy and See the Next Step!</span> </button>
+        <button class="btn" data-clipboard-action="copy" data-clipboard-target="#precode" id="copyData"><span
+            style="color:rgb(255, 60, 0)">Click Me to Copy and See the Next Step!</span> </button>
       </div>
       <div class="form-group" id="instruction" style="display:none">
         <pre>**********Code has been copied********
@@ -81,11 +86,11 @@ If there is any issue, please report to: - <b>ashish@mitmuzaffarpur.org</b></pre
 
 
   <script type="text/javascript">
-    $(document).ready(function() {
+    $(document).ready(function () {
       $('#header').load('../header-ads.html');
       $('#footer').load('../footer-ads.html');
 
-      $('#submit-file').on("click", function(e) {
+      $('#submit-file').on("click", function (e) {
         e.preventDefault();
         if (!$('#files')[0].checkValidity()) {
           alert("Please select a formatted CSV File!");
@@ -95,14 +100,14 @@ If there is any issue, please report to: - <b>ashish@mitmuzaffarpur.org</b></pre
               delimiter: "auto",
               complete: displayHTMLTable,
             },
-            before: function(file, inputElem) {
+            before: function (file, inputElem) {
 
               //console.log("Parsing file...", file);
             },
-            error: function(err, file) {
+            error: function (err, file) {
               console.log("ERROR:", err, file);
             },
-            complete: function() {
+            complete: function () {
               var T = document.getElementById("codegen");
               T.style.display = "block";
               //console.log("Done with all files");
@@ -111,7 +116,7 @@ If there is any issue, please report to: - <b>ashish@mitmuzaffarpur.org</b></pre
         }
       });
 
-      $('#generate-code').on("click", function(e) {
+      $('#generate-code').on("click", function (e) {
         e.preventDefault();
         if (!$('#files')[0].checkValidity()) {
           alert("Please select a formatted CSV File!");
@@ -121,13 +126,13 @@ If there is any issue, please report to: - <b>ashish@mitmuzaffarpur.org</b></pre
               delimiter: "auto",
               complete: generateCode,
             },
-            before: function(file, inputElem) {
+            before: function (file, inputElem) {
               //console.log("Parsing file...", file);
             },
-            error: function(err, file) {
+            error: function (err, file) {
               //console.log("ERROR:", err, file);
             },
-            complete: function() {
+            complete: function () {
               //var T = document.getElementById("submit-file");
               //T.style.display = "none";
               //console.log("Done with all files");
@@ -175,21 +180,21 @@ If there is any issue, please report to: - <b>ashish@mitmuzaffarpur.org</b></pre
         data.shift();
         var allData = "";
         for (i = 0; i < data.length - 1; i++) {
-          var nameFormat=String(data[i]);
+          var nameFormat = String(data[i]);
           nameFormat = nameFormat.split(",");
-          var colCount=nameFormat.length;
+          var colCount = nameFormat.length;
           //alert(parseInt(colCount));
-          var oneData="";
-          for(j = 0 ; j < parseInt(colCount); j++){
-            if(j == 1){
-              oneData = oneData.concat("\"",nameFormat[j],"\"",",");
-            } else if (j == colCount-1 ){
+          var oneData = "";
+          for (j = 0; j < parseInt(colCount); j++) {
+            if (j == 1) {
+              oneData = oneData.concat("\"", nameFormat[j], "\"", ",");
+            } else if (j == colCount - 1) {
               oneData = oneData.concat(nameFormat[j]);
+            }
+            else {
+              oneData = oneData.concat(nameFormat[j], ",");
+            }
           }
-          else{
-            oneData = oneData.concat(nameFormat[j],",");
-          }
-        }
           //alert(oneData);
 
           if (i == 0)
@@ -201,16 +206,28 @@ If there is any issue, please report to: - <b>ashish@mitmuzaffarpur.org</b></pre
         }
         //alert(allData);
         var K = document.getElementById("precode");
-        K.innerText = "var marks=".concat(allData,';',defaultCode());
+        K.innerText = "var marks=".concat(allData, ';', defaultCode());
         var P = document.getElementById("gen_code_marks");
         P.style.display = "block";
         var C = document.getElementById('copyData');
-        C.scrollTop=0;
+        C.scrollTop = 0;
+        window.scrollTo(0, document.body.scrollHeight);
+        blink('#copyData', 5);
       }
 
-      function defaultCode(){
+      function blink(selector, repeat) {
+        if (!repeat) return;
+        $(selector).fadeOut('slow', function () {
+          $(this).fadeIn('slow', function () {
+            blink(this, repeat - 1);
+          });
+        });
+      }
+
+
+      function defaultCode() {
         /*Don't Edit this code for any reason*/
-        var words=`var words = { 0: "Zero", 1: "One", 2: "Two", 3: "Three", 4: "Four", 5: "Five", 6: "Six", 7: "Seven", 8: "Eight", 9: "Nine",
+        var words = `var words = { 0: "Zero", 1: "One", 2: "Two", 3: "Three", 4: "Four", 5: "Five", 6: "Six", 7: "Seven", 8: "Eight", 9: "Nine",
           10: "Ten", 11: "Eleven", 12: "Twelve", 13: "Thirteen", 14: "Fourteen", 15: "Fifteen", 16: "Sixteen",
           17: "Seventeen", 18: "Eighteen", 19: "Nineteen", 20: "Twenty", 21: "Twenty One", 22: "Twenty Two",
           23: "Twenty Three", 24: "Twenty Four", 25: "Twenty Five", 26: "Twenty Six", 27: "Twenty Seven", 28: "Twenty Eight",
@@ -227,8 +244,18 @@ If there is any issue, please report to: - <b>ashish@mitmuzaffarpur.org</b></pre
           89: "Eighty Nine", 90: "Ninety", 91: "Ninety One", 92: "Ninety Two", 93: "Ninety Three", 94: "Ninety Four",
           95: "Ninety Five", 96: "Ninety Six", 97: "Ninety Seven", 98: "Ninety Eight", 99: "Ninety Nine", 100: "Hundred" };`;
         var mT = "var marksTable = document.getElementById('ctl00_mastercontentplaceholder_gvInternalmark');";
-        var sC="var studentsCount = document.getElementById('ctl00_mastercontentplaceholder_gvInternalmark').rows.length;";
-var f =`function findReg(regNo){
+        var sC = "var studentsCount = document.getElementById('ctl00_mastercontentplaceholder_gvInternalmark').rows.length;";
+        var t = "let maxMarks = marksTable.rows[0].cells[6].innerText.split('(')[1].split(')')[0];";
+        var examName = `var examName = document.getElementById('ctl00_mastercontentplaceholder_ddlExam').options[document.getElementById('ctl00_mastercontentplaceholder_ddlExam').selectedIndex].text;`;
+        var branchName = `var branchName = document.getElementById('ctl00_mastercontentplaceholder_ddlBranches').options[document.getElementById('ctl00_mastercontentplaceholder_ddlBranches').selectedIndex].text;`;
+        var semester = `var semester = document.getElementById('ctl00_mastercontentplaceholder_ddlSessions').options[document.getElementById('ctl00_mastercontentplaceholder_ddlSessions').selectedIndex].text;`;
+        var subjectName = `var subjectName = document.getElementById('ctl00_mastercontentplaceholder_ddlCourse').options[document.getElementById('ctl00_mastercontentplaceholder_ddlCourse').selectedIndex].text;`;
+
+        var maxMarksScored = 'let maxGivenMarks=-1; for (var i =0;i<marks.length;i++){ if(maxGivenMarks < marks[i][3]) maxGivenMarks = marks[i][3];}';
+        var confirmationToProceed = "if(confirm('Exam Name - '+ examName+'\\nBranch Name - '+branchName+'\\n'+semester+'\\nSubject Name - '+subjectName+'\\n\\nMaximum Marks Permitted: '+maxMarks + '\\nMaximum Marks Given: '+maxGivenMarks+'\\n\\nDo you want to proceed?') != true) {console.log('Marks was not entered, Please repaeat the steps with corrected marks!'); alert('Marks was not entered, Please repaeat the steps with corrected marks!');} else {";
+
+
+        var f = `function findReg(regNo){
   var R = [];
   for (var i = 0 ; i<marks.length;i++){
       if(regNo == marks[i][2]){
@@ -238,7 +265,7 @@ var f =`function findReg(regNo){
       }
   return R;
 }`;
-var l = `for(var i = 2; i<=studentsCount;i++){
+        var l = `for(var i = 2; i<=studentsCount;i++){
   var sNo = (i).toLocaleString('en-US',{minimumIntegerDigits: 2, useGrouping:false});
   var regNumberOnWeb = marksTable.rows[i-1].cells[1].innerText;
   var R = findReg(regNumberOnWeb);
@@ -256,14 +283,15 @@ var l = `for(var i = 2; i<=studentsCount;i++){
   else if (R.length == 0){
       flag=1;
       console.log("For RegNo: "+regNumberOnWeb+", Details Not Found-> Check Input File or Edit it Manually on the portal");
+      alert("For RegNo: "+regNumberOnWeb+", Details Not Found-> Check Input File or Edit it Manually on the portal");
       //alert("For RegNo: "+regNumberOnWeb+" Details Not Found-> Check Input File");
     }
   }
 if(flag == 0){
     console.log("All Set, Good To Go !\\n*****Please Use Submit button on the BEU portal to save your data.*****\\n*****Please Crosscheck before Making Final Submission i.e before Principal's Approval*****");
-
-}`;
-        return "\n".concat(words,"\n",mT,"\n",sC,"\n",f,"\n",l);
+    alert("All Set, Good To Go !\\n*****Please Use Submit button on the AKU portal to save your data.*****\\n*****Please Crosscheck before Making Final Submission i.e before Principal's Approval*****");
+}}`;
+        return "\n".concat(words, "\n", mT, "\n", sC, "\n", t, "\n", examName, "\n" + branchName + "\n" + semester + "\n" + subjectName + "\n" + maxMarksScored + "\n" + confirmationToProceed + "\n" + f, "\n", l);
       }
 
 
@@ -273,13 +301,13 @@ if(flag == 0){
   <script>
     var clipboard = new ClipboardJS('.btn');
 
-    clipboard.on('success', function(e) {
+    clipboard.on('success', function (e) {
       var T = document.getElementById("instruction");
       T.style.display = "block";
       console.log(e);
     });
 
-    clipboard.on('error', function(e) {
+    clipboard.on('error', function (e) {
       console.log(e);
     });
   </script>
