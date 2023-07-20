@@ -61,7 +61,7 @@
       <div class="form-group" id="instruction" style="display:none">
         <pre>**********Code has been copied********
          Now, Please Follow these steps in a new Chrome Tab
-1. Open new tab, login to the AKU Marks upload portal
+1. Open a new tab, login to the AKU Marks upload portal
 2. Visit to marks upload course page where you want to enter marks
 <!-- 3. Press <b>Ctrl+Shift+j</b>   [ A new window/side Screen [DevTools] will open ]
 4. Press <b>Ctrl+shift+p</b>   [ A Run Command Menu will open ]
@@ -207,6 +207,17 @@ If there is any issue, please report to: - <b>ashish@mitmuzaffarpur.org</b></pre
         P.style.display = "block";
         var C = document.getElementById('copyData');
         C.scrollTop = 0;
+         window.scrollTo(0, document.body.scrollHeight);
+        blink('#copyData', 5);
+      }
+
+      function blink(selector, repeat) {
+        if (!repeat) return;
+        $(selector).fadeOut('slow', function () {
+          $(this).fadeIn('slow', function () {
+            blink(this, repeat - 1);
+          });
+        });
       }
 
       function defaultCode() {
