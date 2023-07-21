@@ -186,7 +186,7 @@ If there is any issue, please report to: - <b>ashish@mitmuzaffarpur.org</b></pre
           //alert(parseInt(colCount));
           var oneData = "";
           for (j = 0; j < parseInt(colCount); j++) {
-            if (j == 1) {
+            if (j == 2) {
               oneData = oneData.concat("\"", nameFormat[j], "\"", ",");
             } else if (j == colCount - 1) {
               oneData = oneData.concat(nameFormat[j]);
@@ -258,7 +258,7 @@ If there is any issue, please report to: - <b>ashish@mitmuzaffarpur.org</b></pre
         var f = `function findReg(regNo){
   var R = [];
   for (var i = 0 ; i<marks.length;i++){
-      if(regNo == marks[i][2]){
+      if(regNo == marks[i][1]){
           R = marks[i];
           break;
         }
