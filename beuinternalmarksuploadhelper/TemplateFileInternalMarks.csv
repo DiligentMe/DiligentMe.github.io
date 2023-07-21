@@ -1,11 +1,11 @@
-S. No.,Name of Student,AKU Registration No.,Attendance Marks,Class Test Marks,ESE Marks,Total (Optional)
-1,Abhay Kumar Jaiswal,18102107001,4,5,17,26
-2,ABDUL JABBAR,18102107002,5,5,15,25
-3,Abhishek Gupta,18102107003,5,5,12,22
-4,Abhishek kumar sharma,18102107004,4,5,17,26
-5,Ajit Kumar Paswan,18102107005,5,5,14,24
-6,Aditya Raj,18102107006,5,5,16,26
-7,Anurag Anand,18102107007,4,4,19,27
-8,ANKUSH KUMAR,18102107008,4,5,17,26
-9,Ashutosh kumar,18102107009,5,5,16,26
-10,Avinash kumar,18102107010,5,5,15,25
+S. No.,AKU Registration No.,Name of Student,Attendance Marks,Class Test Marks,ESE Marks,Total (Optional)
+1,18102107001,Abhay Kumar Jaiswal,4,5,17,26
+2,18102107002,ABDUL JABBAR,5,5,15,25
+3,18102107003,Abhishek Gupta,5,5,12,22
+4,18102107004,Abhishek kumar sharma,4,5,17,26
+5,18102107005,Ajit Kumar Paswan,5,5,14,24
+6,18102107006,Aditya Raj,5,5,16,26
+7,18102107007,Anurag Anand,4,4,19,27
+8,18102107008,ANKUSH KUMAR,4,5,17,26
+9,18102107009,Ashutosh kumar,5,5,16,26
+10,18102107010,Avinash kumar,5,5,15,25
