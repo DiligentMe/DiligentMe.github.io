@@ -251,8 +251,8 @@ If there is any issue, please report to: - <b>ashish@mitmuzaffarpur.org</b></pre
         var semester = `var semester = document.getElementById('ctl00_mastercontentplaceholder_ddlSessions').options[document.getElementById('ctl00_mastercontentplaceholder_ddlSessions').selectedIndex].text;`;
         var subjectName = `var subjectName = document.getElementById('ctl00_mastercontentplaceholder_ddlCourse').options[document.getElementById('ctl00_mastercontentplaceholder_ddlCourse').selectedIndex].text;`;
 
-        var maxMarksScored = 'let maxGivenMarks=-1; for (var i =0;i<marks.length;i++){ if(maxGivenMarks < marks[i][3]) maxGivenMarks = marks[i][3];}';
-        var confirmationToProceed = "if(confirm('Exam Name - '+ examName+'\\nBranch Name - '+branchName+'\\n'+semester+'\\nSubject Name - '+subjectName+'\\n\\nMaximum Marks Permitted: '+maxMarks + '\\nMaximum Marks Given: '+maxGivenMarks+'\\n\\nDo you want to proceed?') != true) {console.log('Marks was not entered, Please repaeat the steps with corrected marks!'); alert('Marks was not entered, Please repaeat the steps with corrected marks!');} else {";
+        var maxMarksScored = 'let maxGivenMarks=-1; for (var i =0;i<marks.length;i++){ if(maxGivenMarks < marks[i][5]) maxGivenMarks = marks[i][5];}';
+        var confirmationToProceed = "if(confirm('Exam Name - '+ examName+'\\nBranch Name - '+branchName+'\\n'+semester+'\\nSubject Name - '+subjectName+'\\n\\nMaximum Internal Marks Permitted: '+maxMarks + '\\nMaximum Internal Marks Given: '+maxGivenMarks+'\\n\\nDo you want to proceed?') != true) {console.log('Marks was not entered, Please repaeat the steps with corrected marks!'); alert('Marks was not entered, Please repaeat the steps with corrected marks!');} else {";
 
 
         var f = `function findReg(regNo){
