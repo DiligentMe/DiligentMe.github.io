@@ -37,7 +37,7 @@ let dstHolidays = {
     '04/29/2023',
   ],
   4: ['05/01/2023', '05/05/2023'],
-  5: ['06/04/2023','06/11/2023','06/18/2023','06/25/2023'],
+  5: ['06/04/2023', '06/11/2023', '06/18/2023', '06/25/2023', '06/29/2023'],
   6: ['07/29/2023'],
   7: ['08/15/2023', '08/30/2023'],
   8: ['09/06/2023', '09/28/2023'],
@@ -185,7 +185,12 @@ function buildDataForAttendanceTable(forMonthYear = 'All Months') {
   //buildMonthCalendarWorkingDays();
   //alert(forMonthYear);
   //document.getElementById('monthpicker').style.display = 'inline-block';
-  var T = document.getElementById('pbar');
+
+  forMonthYear = document
+    .getElementById('reportrange')
+    .getElementsByTagName('span')[0].innerText;
+
+  let T = document.getElementById('pbar');
   T.style.display = 'block';
   allDates = new Array();
 
@@ -200,15 +205,7 @@ function buildDataForAttendanceTable(forMonthYear = 'All Months') {
       );
     document.getElementById('tableTitle').innerText =
       'Attendance of ' + monthYearForTableTitle;
-  } else if (forMonthYear == 'Custom Range') {
-    var inp = document.createElement('input');
-    inp.type = 'text';
-    inp.name = 'daterange';
-    inp.value = '01/01/2015 - 01/31/2015';
-    document.getElementById('months').appendChild(inp);
-    //$('input[name="daterange"]').daterangepicker({});
-    //console.log('Custom Range Selected !');
-  } else {
+  } /* else {
     document.getElementById('tableTitle').innerText =
       'Attendance of ' + forMonthYear;
     var month = forMonthYear.split(' ')[0];
@@ -219,7 +216,15 @@ function buildDataForAttendanceTable(forMonthYear = 'All Months') {
     let lDate = moment(new Date(fDate)).endOf('month').format('MM/DD/YYYY');
     if (moment(lastDate) <= moment(lDate)) allDates = getDates(fDate, lastDate);
     else allDates = getDates(fDate, lDate);
+  } */ else {
+    allDates = getDates(
+      forMonthYear.split('-')[0].trim(),
+      forMonthYear.split('-')[1].trim()
+    );
   }
+
+  document.getElementById('tableTitle').innerText =
+    'Attendance from ' + forMonthYear;
 
   dataForTable = new Array();
   let c = 0;
@@ -801,7 +806,7 @@ function readBioCSV(results, fileType = '.csv') {
     var el = document.createElement('option');
     el.textContent = optn;
     el.value = optn;
-    select.appendChild(el);
+    //select.appendChild(el);
   }
   //var el = document.createElement('option');
   //el.textContent = 'Custom Range';
