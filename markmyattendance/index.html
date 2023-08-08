@@ -214,11 +214,11 @@
       <form class="form" id="bioAttnUpload">
         <div class="form-group">
           <label for="bio-attn-file" class="col-form-label-sm"><u style="color:red;">Biometric Attendance Data
-              (DAT/CSV File)</u>
-            <a href="./SampleBiometricAttendanceData.csv">(Download Sample CSV file)</a>
+              (DAT File)</u>
+           <!-- <a href="./SampleBiometricAttendanceData.csv">(Download Sample CSV file)</a> -->
           </label>
-          <input type="file" id="bio-attn-file" class="form-control form-control-sm" accept=".csv,.dat" name="bio-attn"
-            placeholder="Select Biometric Attendance CSV File" onchange="return BioAttnfileValidation()" required />
+          <input type="file" id="bio-attn-file" class="form-control form-control-sm" accept=".Dat,.DAT,.dat" name="bio-attn"
+            placeholder="Select Biometric Attendance DAT File" onchange="return BioAttnfileValidation()" required />
 
           <button type="button" id="submit-bio-attn" class="btn btn-sm btn-danger"
             style="margin-top: 2px; margin-bottom: 5px;">Upload File
@@ -417,7 +417,7 @@
       $('#submit-bio-attn').on("click", function (e) {
         //e.preventDefault();
         if (!$('#bio-attn-file')[0].checkValidity()) {
-          alert("Please select formatted CSV File or .dat file downloaded from Biometric, Please check the sample for CSV!");
+          alert("Please select .dat file downloaded from Biometric!");
 
         }
         else {
@@ -427,7 +427,7 @@
             document.getElementById('bio-attn-file');
           var filePath = fileInput.value;
           var allowedExtensions =
-            /(\.csv|\.CSV|\.dat|\.DAT|\.Dat)$/i;
+            /(\.dat|\.DAT|\.Dat)$/i;
           let fileExtension = allowedExtensions.exec(filePath);
           //If the file is a .dat file
           if (fileExtension[0] === '.dat') {
