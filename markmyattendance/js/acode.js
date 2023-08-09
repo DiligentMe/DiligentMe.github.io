@@ -348,7 +348,7 @@ function buildAttendanceTable() {
     sortable: true,
     align: 'center',
     valign: 'middle',
-    footerFormatter: 'Daily Attendance %',
+    footerFormatter: 'Attendance %',
     switchable: false,
   });
   column.push({
