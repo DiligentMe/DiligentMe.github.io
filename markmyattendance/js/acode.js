@@ -37,7 +37,7 @@ let dstHolidays = {
     '04/29/2023',
   ],
   4: ['05/01/2023', '05/05/2023'],
-  5: ['06/04/2023', '06/11/2023', '06/18/2023', '06/25/2023', '06/29/2023'],
+  5: ['06/04/2023', '06/11/2023', '06/18/2023', '06/25/2023'],
   6: ['07/29/2023'],
   7: ['08/15/2023', '08/30/2023'],
   8: ['09/06/2023', '09/28/2023'],
@@ -183,17 +183,18 @@ function getKeyByValue(object, value) {
 
 function buildDataForAttendanceTable(forMonthYear = 'All Months') {
   //buildMonthCalendarWorkingDays();
-  //alert(forMonthYear);
-  //document.getElementById('monthpicker').style.display = 'inline-block';
-
   forMonthYear = document
     .getElementById('reportrange')
     .getElementsByTagName('span')[0].innerText;
 
-  let T = document.getElementById('pbar');
+  //document.getElementById('monthpicker').style.display = 'inline-block';
+  var T = document.getElementById('pbar');
   T.style.display = 'block';
   allDates = new Array();
-
+  /* console.log(
+    document.getElementById('reportrange').getElementsByTagName('span')[0]
+      .innerText
+  ); */
   if (forMonthYear == 'All Months') {
     allDates = getDates(firstDate, lastDate);
     if (availMonths.length == 1) {
@@ -216,16 +217,18 @@ function buildDataForAttendanceTable(forMonthYear = 'All Months') {
     let lDate = moment(new Date(fDate)).endOf('month').format('MM/DD/YYYY');
     if (moment(lastDate) <= moment(lDate)) allDates = getDates(fDate, lastDate);
     else allDates = getDates(fDate, lDate);
-  } */ else {
+    console.log(fDate, lDate);
+  }  */ else {
     allDates = getDates(
       forMonthYear.split('-')[0].trim(),
       forMonthYear.split('-')[1].trim()
     );
   }
 
+  //console.log(forMonthYear.split('-')[0], forMonthYear.split('-')[1]);
   document.getElementById('tableTitle').innerText =
     'Attendance from ' + forMonthYear;
-
+  //console.log(allDates);
   dataForTable = new Array();
   let c = 0;
   for (let i = 0; i < idData.length; i++) {
@@ -440,7 +443,9 @@ function buildAttendanceTable() {
         fixedRightNumber: +2,
         iconSize: 'sm',
         cellStyle: 'text-color: Blue;',
-
+        pagination: true,
+        pageSize: 100,
+        paginationParts: ['pageSize', 'pageList'],
         onExportStarted: function () {
           if (document.getElementById('inOutTime').checked) {
             timeChedked = true;
@@ -728,7 +733,7 @@ function readBioCSV(results, fileType = '.csv') {
   }
 
   for (let i = 0; i < results.data.length - filecheck; i++) {
-    if (i == 1) console.log(results);
+    //if (i == 1) console.log(results);
     var row = results.data[i];
     //console.log(row);
     let cells = row.join(',').split(',');
@@ -762,6 +767,7 @@ function readBioCSV(results, fileType = '.csv') {
 
     if (firstDate == null) {
       firstDate = d.split(' ')[0];
+      //$('#reportrange').data('daterangepicker').setStartDate = firstDate;
     }
     //alert('FirstDate:' + firstDate);
     if (
@@ -799,6 +805,7 @@ function readBioCSV(results, fileType = '.csv') {
     //alert('Data For ' + cells[0] + ' : ' + bioData.get(parseInt(cells[0])));
     lastDate = d.split(' ')[0];
   }
+
   //alert('BioData: ' + 'BioDataLoaded' + bioData.size);
   var select = document.getElementById('months');
   for (var i = 0; i < availMonths.length; i++) {
@@ -808,9 +815,10 @@ function readBioCSV(results, fileType = '.csv') {
     el.value = optn;
     //select.appendChild(el);
   }
-  //var el = document.createElement('option');
-  //el.textContent = 'Custom Range';
-  //el.value = 'Custom Range';
+  var el = document.createElement('option');
+  el.textContent = 'Custom Range';
+  el.value = 'Custom Range';
+  el.id = 'selectRangeButton';
   //select.appendChild(el);
   //console.log(bioData);
   //alert('Total BioData: ' + bioData.size);
