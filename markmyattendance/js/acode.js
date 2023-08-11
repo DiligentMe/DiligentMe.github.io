@@ -779,10 +779,10 @@ function readBioCSV(results, fileType = '.csv') {
         monthMap[new Date(d).getMonth()] + ' ' + new Date(d).getFullYear()
       );
     }
-
-    if (idDateTimeMap.has(parseInt(cells[0]) + ',' + d.split(' ')[0])) {
+//update ParseInt(cells[0]) to cells[0].trim()
+    if (idDateTimeMap.has(cells[0].trim() + ',' + d.split(' ')[0])) {
       idDateTimeMap
-        .get(parseInt(cells[0]) + ',' + d.split(' ')[0])
+        .get(cells[0].trim() + ',' + d.split(' ')[0])
         .push(d.split(' ')[1]);
     } else {
       idDateTimeMap.set(
@@ -792,15 +792,17 @@ function readBioCSV(results, fileType = '.csv') {
     }
     //alert(cells[0]);
     //alert(typeof cells[0]);
-    if (bioData.has(parseInt(cells[0]))) {
-      if (!bioData.get(parseInt(cells[0])).includes(cells[1].split(' ')[0])) {
-        bioData.get(parseInt(cells[0])).push(cells[1].split(' ')[0]);
+    if (bioData.has(cells[0].trim())) {
+      if (!bioData.get(cells[0].trim()).includes(cells[1].split(' ')[0])) {
+        //bioData.get(parseInt(cells[0])).push(cells[1].split(' ')[0]);
+        bioData.get(cells[0].trim()).push(cells[1].split(' ')[0]);
       }
 
       //var dateArr = bioData.get(parseInt(cells[0]));
       //var newarr = dateArr.filter((x, y) => dateArr.indexOf(x) == y);
     } else {
-      bioData.set(parseInt(cells[0]), new Array(cells[1].split(' ')[0]));
+      //bioData.set(parseInt(cells[0]), new Array(cells[1].split(' ')[0]));
+      bioData.set(cells[0].trim(), new Array(cells[1].split(' ')[0]));
     }
     //alert('Data For ' + cells[0] + ' : ' + bioData.get(parseInt(cells[0])));
     lastDate = d.split(' ')[0];
@@ -840,7 +842,8 @@ function readIdCSV(results) {
     t = idData[i][0];
     idData[i][0] = idData[i][1];
     idData[i][1] = t;
-    idData[i][2] = parseInt(idData[i][2]);
+    //idData[i][2] = parseInt(idData[i][2]);
+    idData[i][2] = idData[i][2];
   }
   idData = idData.sort(function (a, b) {
     return a[0] - b[0];
