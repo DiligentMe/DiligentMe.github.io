@@ -255,8 +255,8 @@ function buildDataForAttendanceTable(forMonthYear = 'All Months') {
     }
     oneStudentData = {
       sn: i + 1,
-      regNo: idData[i][0],
-      name: idData[i][1].toUpperCase(),
+      regNo: idData[i][1],
+      name: idData[i][0].toUpperCase(),
       bioId: idData[i][2],
     };
     //console.log(dateattnMap);
@@ -345,15 +345,7 @@ function buildAttendanceTable() {
     footerFormatter: '-',
     switchable: false,
   });
-  column.push({
-    field: 'name',
-    title: 'Name',
-    sortable: true,
-    align: 'center',
-    valign: 'middle',
-    footerFormatter: '-',
-    switchable: false,
-  });
+  
   column.push({
     field: 'regNo',
     title: 'Reg. No.',
@@ -363,7 +355,15 @@ function buildAttendanceTable() {
     footerFormatter: 'Attendance %',
     switchable: false,
   });
-  
+  column.push({
+    field: 'name',
+    title: 'Name',
+    sortable: true,
+    align: 'center',
+    valign: 'middle',
+    footerFormatter: '-',
+    switchable: false,
+  });
 
   column.push({
     field: 'bioId',
