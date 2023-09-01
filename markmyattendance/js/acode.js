@@ -346,15 +346,6 @@ function buildAttendanceTable() {
     switchable: false,
   });
   column.push({
-    field: 'regNo',
-    title: 'Reg. No.',
-    sortable: true,
-    align: 'center',
-    valign: 'middle',
-    footerFormatter: 'Attendance %',
-    switchable: false,
-  });
-  column.push({
     field: 'name',
     title: 'Name',
     sortable: true,
@@ -363,6 +354,16 @@ function buildAttendanceTable() {
     footerFormatter: '-',
     switchable: false,
   });
+  column.push({
+    field: 'regNo',
+    title: 'Reg. No.',
+    sortable: true,
+    align: 'center',
+    valign: 'middle',
+    footerFormatter: 'Attendance %',
+    switchable: false,
+  });
+  
 
   column.push({
     field: 'bioId',
@@ -839,11 +840,11 @@ function readIdCSV(results) {
   });
 
   for (i = 0; i < idData.length; i++) {
-    t = idData[i][0];
-    idData[i][0] = idData[i][1];
+    t = idData[i][0].trim();
+    idData[i][0] = idData[i][1].trim();
     idData[i][1] = t;
     //idData[i][2] = parseInt(idData[i][2]);
-    idData[i][2] = idData[i][2];
+    idData[i][2] = idData[i][2].trim();
   }
   idData = idData.sort(function (a, b) {
     return a[0] - b[0];
