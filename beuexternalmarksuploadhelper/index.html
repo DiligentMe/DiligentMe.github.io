@@ -173,7 +173,17 @@ If there is any issue, please report to: - <b>ashish@mitmuzaffarpur.org</b></pre
         T.style.display = "none";
 
         var data = results.data;
-        //data.shift();
+        data.shift();
+        //console.log(data);
+        var collSemCoursSub = String(data[0]).split(",");
+        // Convert all values to strings and wrap in double quotes
+        //var collCode = `${String(collSemCoursSub[0]).trim()}`;
+        //var sem = `"${String(collSemCoursSub[1]).trim()}"`;
+        var subCode = `"${String(collSemCoursSub[0]).trim()}"`;
+        //console.log(collSemCoursSub);
+        //console.log(subCode);
+        
+        data.shift();
         data.shift();
         var allData = "";
         for (i = 0; i < data.length - 1; i++) {
@@ -190,7 +200,9 @@ If there is any issue, please report to: - <b>ashish@mitmuzaffarpur.org</b></pre
             } else {
               oneData = oneData.concat(nameFormat[j], ",");
             }
+           
           }
+           //console.log(oneData);
           //alert(oneData);
 
           if (i == 0)
@@ -200,9 +212,12 @@ If there is any issue, please report to: - <b>ashish@mitmuzaffarpur.org</b></pre
           else
             allData = allData + "[" + oneData + "],";
         }
+        //console.log(allData);
         //alert(allData);
+        let scriptString = `\nvar subCode=${subCode};\n`;
         var K = document.getElementById("precode");
-        K.innerText = "var marks=".concat(allData, ';', defaultCode());
+        
+        K.innerText = "var marks=".concat(allData, ';', scriptString, defaultCode());
         var P = document.getElementById("gen_code_marks");
         P.style.display = "block";
         var C = document.getElementById('copyData');
@@ -222,6 +237,7 @@ If there is any issue, please report to: - <b>ashish@mitmuzaffarpur.org</b></pre
 
       function defaultCode() {
         /*Don't Edit this code for any reason*/
+       
         var words = `var words = { 0: "Zero", 1: "One", 2: "Two", 3: "Three", 4: "Four", 5: "Five", 6: "Six", 7: "Seven", 8: "Eight", 9: "Nine",
           10: "Ten", 11: "Eleven", 12: "Twelve", 13: "Thirteen", 14: "Fourteen", 15: "Fifteen", 16: "Sixteen",
           17: "Seventeen", 18: "Eighteen", 19: "Nineteen", 20: "Twenty", 21: "Twenty One", 22: "Twenty Two",
@@ -241,13 +257,22 @@ If there is any issue, please report to: - <b>ashish@mitmuzaffarpur.org</b></pre
         var mT = "var marksTable = document.getElementById('ctl00_mastercontentplaceholder_GridDetails');";
         var sC = "var studentsCount = document.getElementById('ctl00_mastercontentplaceholder_GridDetails').rows.length;";
         var t = "let maxMarks = marksTable.rows[0].cells[3].innerText.split('(')[1].split(')')[0];";
+        var collegeCode = `var collegeCode = document.getElementById("ctl00_mastercontentplaceholder_ddlcollege").value;`;
         var examName = `var examName = document.getElementById('ctl00_mastercontentplaceholder_ddlExam').options[document.getElementById('ctl00_mastercontentplaceholder_ddlExam').selectedIndex].text;`;
         var branchName = `var branchName = document.getElementById('ctl00_mastercontentplaceholder_ddlProgramme').options[document.getElementById('ctl00_mastercontentplaceholder_ddlProgramme').selectedIndex].text;`;
         var semester = `var semester = document.getElementById('ctl00_mastercontentplaceholder_ddlSemester').options[document.getElementById('ctl00_mastercontentplaceholder_ddlSemester').selectedIndex].text;`;
         var subjectName = `var subjectName = document.getElementById('ctl00_mastercontentplaceholder_ddlCourse').options[document.getElementById('ctl00_mastercontentplaceholder_ddlCourse').selectedIndex].text;`;
-     
+        var subjectCode = `var subjectCode = document.getElementById('ctl00_mastercontentplaceholder_ddlCourse').options[document.getElementById('ctl00_mastercontentplaceholder_ddlCourse').selectedIndex].text.split(" - ")[0].trim();`;
         var maxMarksScored = 'let maxGivenMarks=-1; for (var i =0;i<marks.length;i++){ if(maxGivenMarks < marks[i][3]) maxGivenMarks = marks[i][3];}';
-        var confirmationToProceed = "if(confirm('Exam Name - '+ examName+'\\nBranch Name - '+branchName+'\\n'+semester+'\\nSubject Name - '+subjectName+'\\n\\nMaximum Marks Permitted: '+maxMarks + '\\nMaximum Marks Given: '+maxGivenMarks+'\\n\\nDo you want to proceed?') != true) {console.log('Marks was not entered, Please repaeat the steps with corrected marks!'); alert('Marks was not entered, Please repaeat the steps with corrected marks!');} else {";
+        var confirmCollSemSubject = `
+        if (subjectCode!== subCode) {
+          alert("Mismatch: Mismatch: Subject Code does not match exactly. Please correct the Subject Code and try again.");
+        } else {
+          var userConfirmed = confirm("Subject Code matched! Are you sure you want to proceed?");
+          if (userConfirmed) {
+              console.log("User confirmed.");
+      `;
+        var confirmationToProceed = "if(confirm('College Code - '+ collegeCode+'\\nExam Name - '+ examName+'\\nBranch Name - '+branchName+'\\n'+semester+'\\nSubject Name - '+subjectName+'\\nSubject Code - '+subjectCode+'\\n\\nMaximum Marks Permitted: '+maxMarks + '\\nMaximum Marks Given: '+maxGivenMarks+'\\n\\nDo you want to proceed?') != true) {console.log('Marks was not entered, Please repaeat the steps with corrected marks!'); alert('Marks was not entered, Please repaeat the steps with corrected marks!');} else {";
        
         var f = `function findReg(regNo){
                   var R = [];
@@ -281,7 +306,11 @@ If there is any issue, please report to: - <b>ashish@mitmuzaffarpur.org</b></pre
                 if(flag == 0){
                   console.log("All Set, Good To Go !\\n*****Please Use Submit button on the BEU portal to save your data.*****\\n*****Please Crosscheck before Making Final Submission i.e before Principal's Approval*****");
                   alert("All Set, Good To Go !\\n*****Please Use Submit button on the AKU portal to save your data.*****\\n*****Please Crosscheck before Making Final Submission i.e before Principal's Approval*****");}}`;
-        return "\n".concat(words, "\n", mT, "\n", sC, "\n", t, "\n", examName, "\n" + branchName + "\n" + semester + "\n" + subjectName + "\n" + maxMarksScored +  "\n" + confirmationToProceed + "\n" + f, "\n", l);
+        var close = `} else {
+              console.log("User canceled.");
+          }
+        }`;
+        return "\n".concat(words, "\n", mT, "\n", sC, "\n", t, "\n",collegeCode,"\n", examName, "\n" + branchName + "\n" + semester + "\n" + subjectName + "\n"+subjectCode + "\n" + maxMarksScored +  "\n" +confirmCollSemSubject+"\n"+ confirmationToProceed + "\n" + f, "\n", l,"\n",close);
                 }
       });
 
@@ -294,7 +323,7 @@ If there is any issue, please report to: - <b>ashish@mitmuzaffarpur.org</b></pre
     clipboard.on('success', function(e) {
       var T = document.getElementById("instruction");
       T.style.display = "block";
-      console.log(e);
+      //console.log(e);
     });
 
     clipboard.on('error', function(e) {
