@@ -21,6 +21,30 @@
     .pdfobject {
       border: 1px solid #666;
     }
+
+    .overlay-text-container {
+  position: fixed;
+  top: 10px; /* Adjust top margin as needed */
+  left: 50%; /* Center horizontally */
+  transform: translateX(-50%); /* Center horizontally */
+  pointer-events: none;
+  z-index: 1000;
+  white-space: nowrap; /* Prevent text wrapping */
+ 
+}
+
+ .overlay-text {
+  background-color: red;
+  color: white;
+  padding: 5px; /*reduced padding*/
+  font-size: 1em; /*reduced font size*/
+  animation: flash 1s infinite alternate;
+}
+
+@keyframes flash {
+  from { opacity: 1; }
+  to { opacity: 0.2; }
+}
   </style>
 
 </head>
@@ -38,7 +62,7 @@
       <div class="row">
         <form class="form-inline">
           <div class="form-group">
-            <label for="files">Upload a CSV file of Marks-<a href="./TemplateFileExternalMarks.csv">(Click me to Download Template file)</a>:</label>
+            <label for="files">Upload a CSV file of Marks-<a href="./TemplateFileExternalMarks.csv">(Click me to download new Template file)</a>:</label>
             <input type="file" id="files" class="form-control" accept=".csv" placeholder="Select a CSV File" required />
           </div>
           <div class="form-group">
@@ -330,6 +354,11 @@ If there is any issue, please report to: - <b>ashish@mitmuzaffarpur.org</b></pre
       console.log(e);
     });
   </script>
+  <div class="overlay-text-container">
+  <div class="overlay-text">
+    Please Download the new template file!
+  </div>
+</div>
 </body>
 
 </html>
