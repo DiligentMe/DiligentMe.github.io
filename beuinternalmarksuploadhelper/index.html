@@ -20,6 +20,30 @@
     .pdfobject {
       border: 1px solid #666;
     }
+
+  .overlay-text-container {
+  position: fixed;
+  top: 10px; /* Adjust top margin as needed */
+  left: 50%; /* Center horizontally */
+  transform: translateX(-50%); /* Center horizontally */
+  pointer-events: none;
+  z-index: 1000;
+  white-space: nowrap; /* Prevent text wrapping */
+ 
+}
+
+ .overlay-text {
+  background-color: red;
+  color: white;
+  padding: 5px; /*reduced padding*/
+  font-size: 1em; /*reduced font size*/
+  animation: flash 1s infinite alternate;
+}
+
+@keyframes flash {
+  from { opacity: 1; }
+  to { opacity: 0.2; }
+}
   </style>
 
 </head>
@@ -39,7 +63,7 @@
         <form class="form-inline">
           <div class="form-group">
             <label for="files">Upload a CSV file of Marks-<a href="./TemplateFileInternalMarks.csv">(Click me to
-                Download Template file)</a>:</label>
+                download new template file)</a>:</label>
             <input type="file" id="files" class="form-control" accept=".csv" placeholder="Select a CSV File" required />
           </div>
           <div class="form-group">
@@ -52,7 +76,7 @@
           </div>
         </form>
       </div>
-      <div class="row" <div="" id="parsed_csv_list">
+      <div class="row"  id="parsed_csv_list">
       </div>
       <div class="form-group shadow-textarea" id="gen_code_marks" style="display:none">
         <div class="highlight">
@@ -176,7 +200,10 @@ If there is any issue, please report to: - <b>ashish@mitmuzaffarpur.org</b></pre
         T.style.display = "none";
 
         var data = results.data;
-        //data.shift();
+        data.shift();
+        var collSemCoursSub = String(data[0]).split(",");
+        var subCode = `"${String(collSemCoursSub[0]).trim()}"`;
+        data.shift();
         data.shift();
         var allData = "";
         for (i = 0; i < data.length - 1; i++) {
@@ -205,8 +232,9 @@ If there is any issue, please report to: - <b>ashish@mitmuzaffarpur.org</b></pre
             allData = allData + "[" + oneData + "],";
         }
         //alert(allData);
+         let scriptString = `\nvar subCode=${subCode};\n`;
         var K = document.getElementById("precode");
-        K.innerText = "var marks=".concat(allData, ';', defaultCode());
+        K.innerText = "var marks=".concat(allData, ';',scriptString, defaultCode());
         var P = document.getElementById("gen_code_marks");
         P.style.display = "block";
         var C = document.getElementById('copyData');
@@ -246,13 +274,24 @@ If there is any issue, please report to: - <b>ashish@mitmuzaffarpur.org</b></pre
         var mT = "var marksTable = document.getElementById('ctl00_mastercontentplaceholder_gvInternalmark');";
         var sC = "var studentsCount = document.getElementById('ctl00_mastercontentplaceholder_gvInternalmark').rows.length;";
         var t = "let maxMarks = marksTable.rows[0].cells[6].innerText.split('(')[1].split(')')[0];";
+        var collegeCode = `var collegeCode = document.getElementById("ctl00_mastercontentplaceholder_ddlcollege").value;`;
         var examName = `var examName = document.getElementById('ctl00_mastercontentplaceholder_ddlExam').options[document.getElementById('ctl00_mastercontentplaceholder_ddlExam').selectedIndex].text;`;
         var branchName = `var branchName = document.getElementById('ctl00_mastercontentplaceholder_ddlBranches').options[document.getElementById('ctl00_mastercontentplaceholder_ddlBranches').selectedIndex].text;`;
         var semester = `var semester = document.getElementById('ctl00_mastercontentplaceholder_ddlSessions').options[document.getElementById('ctl00_mastercontentplaceholder_ddlSessions').selectedIndex].text;`;
         var subjectName = `var subjectName = document.getElementById('ctl00_mastercontentplaceholder_ddlCourse').options[document.getElementById('ctl00_mastercontentplaceholder_ddlCourse').selectedIndex].text;`;
+        var subjectCode = `var subjectCode = document.getElementById('ctl00_mastercontentplaceholder_ddlCourse').options[document.getElementById('ctl00_mastercontentplaceholder_ddlCourse').selectedIndex].text.split(" - ")[0].trim();`;
 
         var maxMarksScored = 'let maxGivenMarks=-1; for (var i =0;i<marks.length;i++){ if(maxGivenMarks < marks[i][5]) maxGivenMarks = marks[i][5];}';
-        var confirmationToProceed = "if(confirm('Exam Name - '+ examName+'\\nBranch Name - '+branchName+'\\n'+semester+'\\nSubject Name - '+subjectName+'\\n\\nMaximum Internal Marks Permitted: '+maxMarks + '\\nMaximum Internal Marks Given: '+maxGivenMarks+'\\n\\nDo you want to proceed?') != true) {console.log('Marks was not entered, Please repaeat the steps with corrected marks!'); alert('Marks was not entered, Please repaeat the steps with corrected marks!');} else {";
+        var confirmCollSemSubject = `
+        if (subjectCode!== subCode) {
+          alert("Mismatch: Mismatch: Subject Code does not match exactly. Please correct the Subject Code and try again.");
+        } else {
+          var userConfirmed = confirm("Subject Code matched! Are you sure you want to proceed?");
+          if (userConfirmed) {
+              console.log("User confirmed.");
+      `;
+        
+        var confirmationToProceed = "if(confirm('College Code - '+ collegeCode+'\\nExam Name - '+ examName+'\\nBranch Name - '+branchName+'\\n'+semester+'\\nSubject Name - '+subjectName+'\\nSubject Code - '+subjectCode+'\\n\\nMaximum Internal Marks Permitted: '+maxMarks + '\\nMaximum Internal Marks Given: '+maxGivenMarks+'\\n\\nDo you want to proceed?') != true) {console.log('Marks was not entered, Please repaeat the steps with corrected marks!'); alert('Marks was not entered, Please repaeat the steps with corrected marks!');} else {";
 
 
         var f = `function findReg(regNo){
@@ -291,7 +330,11 @@ if(flag == 0){
     console.log("All Set, Good To Go !\\n*****Please Use Submit button on the BEU portal to save your data.*****\\n*****Please Crosscheck before Making Final Submission i.e before Principal's Approval*****");
     alert("All Set, Good To Go !\\n*****Please Use Submit button on the AKU portal to save your data.*****\\n*****Please Crosscheck before Making Final Submission i.e before Principal's Approval*****");
 }}`;
-        return "\n".concat(words, "\n", mT, "\n", sC, "\n", t, "\n", examName, "\n" + branchName + "\n" + semester + "\n" + subjectName + "\n" + maxMarksScored + "\n" + confirmationToProceed + "\n" + f, "\n", l);
+ var close = `} else {
+              console.log("User canceled.");
+          }
+        }`;
+        return "\n".concat(words, "\n", mT, "\n", sC, "\n", t, "\n", collegeCode,"\n",examName, "\n" + branchName + "\n" + semester + "\n" + subjectName + "\n"+subjectCode + "\n" + maxMarksScored + "\n" + confirmationToProceed + "\n" + f, "\n", l,"\n",close);
       }
 
 
@@ -304,13 +347,18 @@ if(flag == 0){
     clipboard.on('success', function (e) {
       var T = document.getElementById("instruction");
       T.style.display = "block";
-      console.log(e);
+      //console.log(e);
     });
 
     clipboard.on('error', function (e) {
       console.log(e);
     });
   </script>
+  <div class="overlay-text-container">
+  <div class="overlay-text">
+    Please Download the new template file!
+  </div>
+</div>
 </body>
 
 </html>
