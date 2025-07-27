@@ -347,9 +347,9 @@ var sC = `var studentsCount = marksTable.rows.length;`;
               console.log("User canceled.");
           }
         }`;
-        "\n});"
-
-        return "\n".concat(words, "\n", mT, "\n", sC, "\n", t, "\n",collegeCode,"\n", examName, "\n" + branchName + "\n" + semester + "\n" + subjectName + "\n"+subjectCode + "\n" + maxMarksScored +  "\n" +confirmCollSemSubject+"\n"+ confirmationToProceed + "\n" + f, "\n", l,"\n",close);
+        //"\n});"
+var endCallback = "\n});";
+        return "\n".concat(words, "\n", mT, "\n", sC, "\n", t, "\n",collegeCode,"\n", examName, "\n" + branchName + "\n" + semester + "\n" + subjectName + "\n"+subjectCode + "\n" + maxMarksScored +  "\n" +confirmCollSemSubject+"\n"+ confirmationToProceed + "\n" + f, "\n", l,"\n",close,"\n",endCallback);
                 }
       });
 
