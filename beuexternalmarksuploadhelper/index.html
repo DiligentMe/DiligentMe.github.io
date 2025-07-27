@@ -279,8 +279,20 @@ If there is any issue, please report to: - <b>ashish@mitmuzaffarpur.org</b></pre
           83: "Eighty Three", 84: "Eighty Four", 85: "Eighty Five", 86: "Eighty Six", 87: "Eighty Seven", 88: "Eighty Eight",
           89: "Eighty Nine", 90: "Ninety", 91: "Ninety One", 92: "Ninety Two", 93: "Ninety Three", 94: "Ninety Four",
           95: "Ninety Five", 96: "Ninety Six", 97: "Ninety Seven", 98: "Ninety Eight", 99: "Ninety Nine", 100: "Hundred" };`;
-        var mT = "var marksTable = document.getElementById('ctl00_mastercontentplaceholder_GridDetails');";
-        var sC = "var studentsCount = document.getElementById('ctl00_mastercontentplaceholder_GridDetails').rows.length;";
+        //var mT = "var marksTable = document.getElementById('ctl00_mastercontentplaceholder_GridDetails');";
+        //var sC = "var studentsCount = document.getElementById('ctl00_mastercontentplaceholder_GridDetails').rows.length;";
+        var mT = `function waitForGridAndRun(callback){
+  const intervalId = setInterval(() => {
+    const table = document.getElementById('ctl00_mastercontentplaceholder_GridDetails');
+    if (table && table.rows && table.rows.length > 0) {
+      clearInterval(intervalId);
+      callback(table);
+    }
+  }, 300);
+}\nwaitForGridAndRun(function(marksTable){`;
+var sC = `var studentsCount = marksTable.rows.length;`;
+
+        
         var t = "let maxMarks = marksTable.rows[0].cells[3].innerText.split('(')[1].split(')')[0];";
         var collegeCode = `var collegeCode = document.getElementById("ctl00_mastercontentplaceholder_ddlcollege").value;`;
         var examName = `var examName = document.getElementById('ctl00_mastercontentplaceholder_ddlExam').options[document.getElementById('ctl00_mastercontentplaceholder_ddlExam').selectedIndex].text;`;
@@ -335,6 +347,8 @@ If there is any issue, please report to: - <b>ashish@mitmuzaffarpur.org</b></pre
               console.log("User canceled.");
           }
         }`;
+        "\n});"
+
         return "\n".concat(words, "\n", mT, "\n", sC, "\n", t, "\n",collegeCode,"\n", examName, "\n" + branchName + "\n" + semester + "\n" + subjectName + "\n"+subjectCode + "\n" + maxMarksScored +  "\n" +confirmCollSemSubject+"\n"+ confirmationToProceed + "\n" + f, "\n", l,"\n",close);
                 }
       });
