@@ -1,0 +1,954 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Student-friendly DSA learning page covering Searching and Sorting algorithms with visualizers, C code, complexity tables, videos and practice questions." />
+  <title>DSA Learning Hub | Searching & Sorting</title>
+  <style>
+    :root{
+      --bg:#f6f8fc;
+      --surface:#ffffff;
+      --surface-2:#eef4ff;
+      --text:#172033;
+      --muted:#667085;
+      --brand:#2457d6;
+      --brand-2:#6c4cff;
+      --accent:#0f9f6e;
+      --warn:#d97706;
+      --danger:#d14343;
+      --border:#dfe5ef;
+      --code:#101827;
+      --shadow:0 12px 30px rgba(28,39,60,.08);
+      --radius:18px;
+    }
+
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;
+      font-family:Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background:var(--bg);
+      color:var(--text);
+      line-height:1.65;
+    }
+    a{color:var(--brand);text-decoration:none}
+    a:hover{text-decoration:underline}
+    img,svg{max-width:100%}
+    button,input{font:inherit}
+    .container{width:min(1180px,92%);margin:auto}
+    .topbar{
+      position:sticky; top:0; z-index:50;
+      background:rgba(255,255,255,.92);
+      backdrop-filter:blur(14px);
+      border-bottom:1px solid var(--border);
+    }
+    .nav{
+      display:flex;align-items:center;justify-content:space-between;gap:18px;
+      min-height:66px;
+    }
+    .brand{
+      display:flex;align-items:center;gap:10px;font-weight:800;font-size:1.05rem;color:var(--text)
+    }
+    .brand-mark{
+      width:36px;height:36px;border-radius:11px;
+      display:grid;place-items:center;color:#fff;
+      background:linear-gradient(135deg,var(--brand),var(--brand-2));
+      box-shadow:0 8px 18px rgba(36,87,214,.25)
+    }
+    .navlinks{display:flex;gap:8px;flex-wrap:wrap}
+    .navlinks a{
+      color:var(--text);padding:8px 11px;border-radius:10px;font-size:.92rem;font-weight:650
+    }
+    .navlinks a:hover{background:var(--surface-2);text-decoration:none}
+
+    .hero{
+      padding:72px 0 52px;
+      background:
+        radial-gradient(circle at 85% 15%, rgba(108,76,255,.14), transparent 28%),
+        radial-gradient(circle at 10% 15%, rgba(36,87,214,.12), transparent 26%),
+        linear-gradient(#fff,#f7f9fd);
+      border-bottom:1px solid var(--border);
+    }
+    .hero-grid{display:grid;grid-template-columns:1.08fr .92fr;gap:48px;align-items:center}
+    .eyebrow{
+      display:inline-flex;align-items:center;gap:8px;
+      padding:7px 11px;border-radius:999px;background:#e9f0ff;color:var(--brand);
+      font-weight:800;font-size:.84rem;letter-spacing:.02em
+    }
+    h1{font-size:clamp(2.4rem,5vw,4.7rem);line-height:1.05;margin:18px 0 16px;letter-spacing:-.04em}
+    h2{font-size:clamp(1.65rem,3vw,2.5rem);line-height:1.18;margin:0 0 12px;letter-spacing:-.02em}
+    h3{font-size:1.2rem;margin:0 0 8px}
+    .lead{font-size:1.12rem;color:var(--muted);max-width:760px}
+    .hero-actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:26px}
+    .btn{
+      border:0;border-radius:12px;padding:12px 16px;font-weight:800;cursor:pointer;
+      display:inline-flex;align-items:center;justify-content:center;gap:8px;text-decoration:none
+    }
+    .btn:hover{text-decoration:none;transform:translateY(-1px)}
+    .btn-primary{background:var(--brand);color:#fff;box-shadow:0 10px 20px rgba(36,87,214,.22)}
+    .btn-secondary{background:#fff;color:var(--text);border:1px solid var(--border)}
+    .hero-card{
+      background:var(--surface);border:1px solid var(--border);box-shadow:var(--shadow);
+      padding:24px;border-radius:24px
+    }
+    .hero-card svg{display:block;margin:auto}
+    .mini-note{font-size:.9rem;color:var(--muted);margin-top:12px;text-align:center}
+
+    main section{padding:64px 0}
+    .section-head{max-width:760px;margin-bottom:28px}
+    .section-head p{color:var(--muted);margin:8px 0 0}
+    .grid{display:grid;gap:20px}
+    .grid-2{grid-template-columns:repeat(2,minmax(0,1fr))}
+    .grid-3{grid-template-columns:repeat(3,minmax(0,1fr))}
+    .card{
+      background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);
+      box-shadow:var(--shadow);padding:22px
+    }
+    .card p{color:var(--muted)}
+    .pill{
+      display:inline-block;padding:5px 9px;border-radius:999px;font-size:.78rem;font-weight:800;
+      background:#edf3ff;color:var(--brand);margin-bottom:10px
+    }
+    .callout{
+      border-left:4px solid var(--brand);background:#eef4ff;padding:14px 16px;
+      border-radius:0 12px 12px 0;margin:18px 0;color:#26324a
+    }
+    .warning{border-left-color:var(--warn);background:#fff7e8}
+    .success{border-left-color:var(--accent);background:#eafaf4}
+    .bad{border-left-color:var(--danger);background:#fff0f0}
+
+    .concept-art{
+      background:linear-gradient(145deg,#f8fbff,#eef3ff);border:1px solid var(--border);
+      border-radius:16px;padding:18px;margin:16px 0
+    }
+    .array{display:flex;gap:7px;flex-wrap:wrap;justify-content:center;margin:18px 0}
+    .cell{
+      width:54px;height:54px;border-radius:12px;display:grid;place-items:center;
+      background:#fff;border:2px solid #cdd8ea;font-weight:850;font-size:1rem;
+      transition:.25s ease; position:relative
+    }
+    .cell.active{border-color:var(--brand);background:#e8f0ff;transform:translateY(-4px)}
+    .cell.found{border-color:var(--accent);background:#dbf7ed}
+    .cell.sorted{border-color:#96d8c2;background:#eaf9f4}
+    .cell.swap{border-color:var(--warn);background:#fff2d8}
+    .cell.dim{opacity:.34}
+    .index{position:absolute;bottom:-23px;font-size:.68rem;color:var(--muted);font-weight:600}
+
+    .visualizer-controls{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:14px 0}
+    .visualizer-controls input{
+      width:120px;border:1px solid var(--border);border-radius:10px;padding:10px;background:#fff
+    }
+    .status{
+      padding:11px 13px;background:#f7f9fc;border:1px solid var(--border);border-radius:11px;
+      color:#3d4960;font-weight:650;min-height:48px
+    }
+
+    pre{
+      background:var(--code);color:#e7edf7;padding:18px;border-radius:14px;overflow:auto;
+      font-size:.9rem;line-height:1.55;border:1px solid #202a3b
+    }
+    code{font-family:"SFMono-Regular",Consolas,"Liberation Mono",monospace}
+    .inline-code{background:#edf1f7;border-radius:6px;padding:2px 6px;color:#29364d}
+
+    table{width:100%;border-collapse:collapse;background:#fff;border-radius:14px;overflow:hidden}
+    th,td{padding:13px 12px;border-bottom:1px solid var(--border);text-align:left;vertical-align:top}
+    th{background:#f1f5fb;font-size:.9rem}
+    tr:last-child td{border-bottom:0}
+    .table-wrap{overflow:auto;border:1px solid var(--border);border-radius:14px}
+
+    .algo-list{display:grid;gap:15px}
+    .algo-row{
+      display:grid;grid-template-columns:160px 1fr auto;gap:15px;align-items:center;
+      border:1px solid var(--border);border-radius:14px;padding:15px;background:#fff
+    }
+    .meter{height:8px;background:#edf1f6;border-radius:99px;overflow:hidden}
+    .meter span{display:block;height:100%;background:linear-gradient(90deg,var(--brand),var(--brand-2));border-radius:99px}
+    .tag{font-size:.78rem;font-weight:800;padding:5px 8px;border-radius:999px;background:#eef3ff;color:var(--brand)}
+
+    .video-card{
+      display:flex;flex-direction:column;min-height:220px;
+      background:linear-gradient(145deg,#fff,#f7f9ff)
+    }
+    .video-icon{
+      width:48px;height:48px;border-radius:14px;background:#ffeded;display:grid;place-items:center;
+      color:#d62828;font-weight:900;margin-bottom:16px
+    }
+    .video-card .btn{margin-top:auto}
+    .resource-link{
+      display:flex;align-items:flex-start;gap:12px;padding:15px;border:1px solid var(--border);
+      border-radius:14px;background:#fff
+    }
+    .resource-link strong{display:block}
+    .resource-link small{color:var(--muted)}
+
+    details{
+      background:#fff;border:1px solid var(--border);border-radius:13px;padding:0 16px;
+      margin-bottom:10px
+    }
+    summary{cursor:pointer;font-weight:800;padding:15px 0}
+    details p{color:var(--muted);margin-top:0}
+
+    .quiz-option{
+      display:block;width:100%;text-align:left;margin:8px 0;padding:11px 12px;
+      background:#fff;border:1px solid var(--border);border-radius:10px;cursor:pointer
+    }
+    .quiz-option:hover{background:#f6f9ff}
+    .quiz-option.correct{border-color:var(--accent);background:#e8f8f2}
+    .quiz-option.wrong{border-color:var(--danger);background:#fff1f1}
+    .quiz-result{font-weight:750;margin-top:10px}
+
+    .footer{
+      background:#111827;color:#d9e0ea;padding:42px 0;margin-top:30px
+    }
+    .footer p{color:#aeb8c8}
+    .footer a{color:#cfd9ff}
+    .tiny{font-size:.84rem}
+
+    @media(max-width:880px){
+      .hero-grid,.grid-2,.grid-3{grid-template-columns:1fr}
+      .hero{padding-top:50px}
+      .nav{align-items:flex-start;padding:12px 0;flex-direction:column}
+      .navlinks{width:100%;overflow:auto;flex-wrap:nowrap;padding-bottom:4px}
+      .algo-row{grid-template-columns:1fr}
+      .hero-card{order:-1}
+    }
+    @media(max-width:520px){
+      .container{width:min(94%,1180px)}
+      main section{padding:48px 0}
+      .card{padding:17px}
+      .cell{width:46px;height:46px}
+      h1{font-size:2.45rem}
+    }
+  </style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="container nav">
+    <a class="brand" href="#top">
+      <span class="brand-mark">DS</span>
+      <span>DSA Learning Hub</span>
+    </a>
+    <nav class="navlinks" aria-label="Main navigation">
+      <a href="#searching">Searching</a>
+      <a href="#sorting">Sorting</a>
+      <a href="#complexity">Complexity</a>
+      <a href="#visualizers">Visualizers</a>
+      <a href="#videos">Videos</a>
+      <a href="#practice">Practice</a>
+    </nav>
+  </div>
+</header>
+
+<section class="hero" id="top">
+  <div class="container hero-grid">
+    <div>
+      <span class="eyebrow">Data Structures & Algorithms • Student Notes</span>
+      <h1>Searching &amp; Sorting, made visual.</h1>
+      <p class="lead">
+        Learn how computers find data and arrange data efficiently. This page combines core ideas,
+        C programs, diagrams, complexity analysis, interactive demonstrations, video resources,
+        and quick practice.
+      </p>
+      <div class="hero-actions">
+        <a class="btn btn-primary" href="#searching">Start with Searching →</a>
+        <a class="btn btn-secondary" href="#visualizers">Try Visualizers</a>
+      </div>
+      <div class="callout success">
+        <strong>Learning goal:</strong> By the end, you should be able to choose an appropriate
+        searching or sorting algorithm and explain <em>why</em> it is appropriate.
+      </div>
+    </div>
+
+    <div class="hero-card">
+      <svg viewBox="0 0 560 330" role="img" aria-label="Searching and sorting concept diagram">
+        <defs>
+          <linearGradient id="g1" x1="0" x2="1">
+            <stop offset="0" stop-color="#2457d6"/>
+            <stop offset="1" stop-color="#6c4cff"/>
+          </linearGradient>
+        </defs>
+        <rect x="12" y="12" width="536" height="306" rx="26" fill="#f8faff" stroke="#dfe5ef"/>
+        <text x="42" y="58" font-size="20" font-weight="800" fill="#172033">Searching</text>
+        <text x="319" y="58" font-size="20" font-weight="800" fill="#172033">Sorting</text>
+        <g transform="translate(40 82)">
+          <rect x="0" y="0" width="48" height="48" rx="9" fill="#fff" stroke="#b8c5da"/>
+          <rect x="55" y="0" width="48" height="48" rx="9" fill="#fff" stroke="#b8c5da"/>
+          <rect x="110" y="0" width="48" height="48" rx="9" fill="#e8f0ff" stroke="#2457d6" stroke-width="2"/>
+          <rect x="165" y="0" width="48" height="48" rx="9" fill="#fff" stroke="#b8c5da"/>
+          <text x="17" y="31" font-weight="700" fill="#172033">4</text>
+          <text x="72" y="31" font-weight="700" fill="#172033">9</text>
+          <text x="125" y="31" font-weight="800" fill="#2457d6">15</text>
+          <text x="181" y="31" font-weight="700" fill="#172033">22</text>
+          <circle cx="134" cy="79" r="16" fill="url(#g1)"/>
+          <path d="M145 90 L160 105" stroke="#2457d6" stroke-width="6" stroke-linecap="round"/>
+          <text x="0" y="137" font-size="15" fill="#667085">Find target = 15</text>
+        </g>
+        <g transform="translate(318 82)">
+          <rect x="0" y="88" width="36" height="72" rx="6" fill="#8db0ff"/>
+          <rect x="45" y="50" width="36" height="110" rx="6" fill="#6e96ef"/>
+          <rect x="90" y="110" width="36" height="50" rx="6" fill="#a5bcf5"/>
+          <rect x="135" y="22" width="36" height="138" rx="6" fill="#5a7fd6"/>
+          <path d="M2 190 C48 166, 118 166, 170 190" stroke="#6c4cff" stroke-width="4" fill="none" stroke-linecap="round"/>
+          <path d="M163 181 L174 190 L161 198" fill="none" stroke="#6c4cff" stroke-width="4" stroke-linecap="round"/>
+          <text x="0" y="220" font-size="15" fill="#667085">Arrange into order</text>
+        </g>
+        <text x="40" y="291" font-size="16" font-weight="750" fill="#364257">Find efficiently • Order efficiently • Analyze efficiency</text>
+      </svg>
+      <p class="mini-note">The two central questions: <strong>Where is it?</strong> and <strong>In what order should it be?</strong></p>
+    </div>
+  </div>
+</section>
+
+<main>
+  <section id="searching">
+    <div class="container">
+      <div class="section-head">
+        <span class="pill">PART 1</span>
+        <h2>Searching Algorithms</h2>
+        <p>Searching means locating a target value inside a collection of data. The choice of algorithm depends heavily on whether the data is sorted.</p>
+      </div>
+
+      <div class="grid grid-2">
+        <article class="card">
+          <span class="pill">LINEAR SEARCH</span>
+          <h3>Check one element at a time</h3>
+          <p>
+            Linear Search starts from the beginning and compares each element with the target until a match is found
+            or the list ends. It works on <strong>sorted or unsorted</strong> data.
+          </p>
+          <div class="concept-art">
+            <div class="array">
+              <div class="cell">14<span class="index">0</span></div>
+              <div class="cell">7<span class="index">1</span></div>
+              <div class="cell active">29<span class="index">2</span></div>
+              <div class="cell">3<span class="index">3</span></div>
+              <div class="cell found">18<span class="index">4</span></div>
+            </div>
+            <p class="tiny" style="text-align:center;margin-bottom:0">Target = 18 → compare 14, 7, 29, 3, then 18.</p>
+          </div>
+          <div class="callout">
+            <strong>Think of it like:</strong> Finding a particular notebook in an unorganized pile by checking each notebook.
+          </div>
+          <pre><code>int linearSearch(int a[], int n, int key) {
+    for (int i = 0; i &lt; n; i++) {
+        if (a[i] == key)
+            return i;
+    }
+    return -1;
+}</code></pre>
+          <p><strong>Time:</strong> Best O(1), Average O(n), Worst O(n) &nbsp; • &nbsp; <strong>Space:</strong> O(1)</p>
+        </article>
+
+        <article class="card">
+          <span class="pill">BINARY SEARCH</span>
+          <h3>Repeatedly cut the search space in half</h3>
+          <p>
+            Binary Search compares the target with the middle element. One half of the data can then be ignored.
+            The important condition is that the data must already be <strong>sorted</strong>.
+          </p>
+
+          <div class="concept-art">
+            <svg viewBox="0 0 620 235" role="img" aria-label="Binary search diagram">
+              <text x="16" y="25" fill="#667085" font-size="15">Find 31 in a sorted array</text>
+              <g transform="translate(18 45)">
+                <g fill="#fff" stroke="#b9c6da">
+                  <rect x="0" y="0" width="64" height="52" rx="8"/>
+                  <rect x="68" y="0" width="64" height="52" rx="8"/>
+                  <rect x="136" y="0" width="64" height="52" rx="8"/>
+                  <rect x="204" y="0" width="64" height="52" rx="8" fill="#e8f0ff" stroke="#2457d6" stroke-width="2"/>
+                  <rect x="272" y="0" width="64" height="52" rx="8"/>
+                  <rect x="340" y="0" width="64" height="52" rx="8"/>
+                  <rect x="408" y="0" width="64" height="52" rx="8"/>
+                  <rect x="476" y="0" width="64" height="52" rx="8"/>
+                </g>
+                <g fill="#172033" font-size="16" font-weight="700" text-anchor="middle">
+                  <text x="32" y="33">4</text><text x="100" y="33">9</text><text x="168" y="33">15</text>
+                  <text x="236" y="33">22</text><text x="304" y="33">31</text><text x="372" y="33">44</text>
+                  <text x="440" y="33">57</text><text x="508" y="33">68</text>
+                </g>
+                <text x="236" y="79" text-anchor="middle" fill="#2457d6" font-size="14" font-weight="700">mid = 22</text>
+                <path d="M250 88 C290 115, 350 115, 395 88" fill="none" stroke="#6c4cff" stroke-width="3"/>
+                <text x="322" y="137" text-anchor="middle" fill="#667085" font-size="14">31 &gt; 22 → discard the left half</text>
+                <rect x="272" y="154" width="64" height="52" rx="8" fill="#dbf7ed" stroke="#0f9f6e" stroke-width="2"/>
+                <text x="304" y="187" text-anchor="middle" fill="#0b6f50" font-size="16" font-weight="800">31</text>
+                <text x="374" y="187" fill="#0b6f50" font-size="14" font-weight="700">Found</text>
+              </g>
+            </svg>
+          </div>
+          <pre><code>int binarySearch(int a[], int n, int key) {
+    int low = 0, high = n - 1;
+
+    while (low &lt;= high) {
+        int mid = low + (high - low) / 2;
+
+        if (a[mid] == key) return mid;
+        if (a[mid] &lt; key)  low = mid + 1;
+        else                high = mid - 1;
+    }
+    return -1;
+}</code></pre>
+          <p><strong>Time:</strong> Best O(1), Average/Worst O(log n) &nbsp; • &nbsp; <strong>Space:</strong> O(1) iterative</p>
+        </article>
+      </div>
+
+      <div class="callout warning">
+        <strong>Exam point:</strong> Binary Search is faster asymptotically, but it cannot directly be used on an unsorted array.
+        If you sort only to perform one small search, the cost of sorting may be more than a simple Linear Search.
+      </div>
+    </div>
+  </section>
+
+  <section id="sorting" style="background:#fff;border-top:1px solid var(--border);border-bottom:1px solid var(--border)">
+    <div class="container">
+      <div class="section-head">
+        <span class="pill">PART 2</span>
+        <h2>Sorting Algorithms</h2>
+        <p>Sorting arranges data in a meaningful order—usually ascending or descending. Sorted data is easier to search, display, compare and process.</p>
+      </div>
+
+      <div class="grid grid-3">
+        <article class="card">
+          <span class="pill">BUBBLE SORT</span>
+          <h3>Swap neighboring elements</h3>
+          <p>Compare adjacent values. If they are in the wrong order, swap them. After each pass, a large value “bubbles” toward the end.</p>
+          <div class="concept-art">
+            <div class="array">
+              <div class="cell swap">8</div><div class="cell swap">3</div><div class="cell">5</div><div class="cell">1</div>
+            </div>
+            <p class="tiny" style="text-align:center">8 &gt; 3 → swap → 3, 8, 5, 1</p>
+          </div>
+          <p><strong>Best:</strong> O(n)* &nbsp; <strong>Avg/Worst:</strong> O(n²) &nbsp; <strong>Stable:</strong> Yes</p>
+          <p class="tiny">*Best O(n) with an optimized “no swaps” check.</p>
+        </article>
+
+        <article class="card">
+          <span class="pill">SELECTION SORT</span>
+          <h3>Select the minimum</h3>
+          <p>Find the smallest element in the unsorted part and place it at the beginning. Repeat for the remaining positions.</p>
+          <div class="concept-art">
+            <div class="array">
+              <div class="cell">8</div><div class="cell">3</div><div class="cell">5</div><div class="cell active">1</div>
+            </div>
+            <p class="tiny" style="text-align:center">Minimum = 1 → move/swap it into the first position.</p>
+          </div>
+          <p><strong>Best/Avg/Worst:</strong> O(n²) &nbsp; <strong>Stable:</strong> Usually No &nbsp; <strong>Swaps:</strong> Few</p>
+        </article>
+
+        <article class="card">
+          <span class="pill">INSERTION SORT</span>
+          <h3>Insert into the sorted portion</h3>
+          <p>Build a sorted portion from left to right. Take the next value and insert it into its correct place—similar to arranging playing cards.</p>
+          <div class="concept-art">
+            <div class="array">
+              <div class="cell sorted">3</div><div class="cell sorted">7</div><div class="cell active">5</div><div class="cell">9</div>
+            </div>
+            <p class="tiny" style="text-align:center">Insert 5 between 3 and 7.</p>
+          </div>
+          <p><strong>Best:</strong> O(n) &nbsp; <strong>Avg/Worst:</strong> O(n²) &nbsp; <strong>Stable:</strong> Yes</p>
+        </article>
+
+        <article class="card">
+          <span class="pill">MERGE SORT</span>
+          <h3>Divide, sort, merge</h3>
+          <p>Split the array into halves until single elements remain, then merge the pieces back together in sorted order.</p>
+          <div class="concept-art">
+            <svg viewBox="0 0 520 190" role="img" aria-label="Merge sort divide and merge diagram">
+              <g font-family="sans-serif" font-weight="700" text-anchor="middle">
+                <rect x="138" y="5" width="244" height="38" rx="9" fill="#e9f0ff" stroke="#2457d6"/>
+                <text x="260" y="30" fill="#172033">8  3  5  1</text>
+                <path d="M260 43 L150 75 M260 43 L370 75" stroke="#7e8ca5" stroke-width="2"/>
+                <rect x="82" y="75" width="136" height="36" rx="8" fill="#fff" stroke="#b9c6da"/>
+                <rect x="302" y="75" width="136" height="36" rx="8" fill="#fff" stroke="#b9c6da"/>
+                <text x="150" y="99" fill="#172033">8  3</text><text x="370" y="99" fill="#172033">5  1</text>
+                <path d="M150 111 L260 146 M370 111 L260 146" stroke="#7e8ca5" stroke-width="2"/>
+                <rect x="138" y="145" width="244" height="38" rx="9" fill="#e5f8f1" stroke="#0f9f6e"/>
+                <text x="260" y="170" fill="#0b6f50">1  3  5  8</text>
+              </g>
+            </svg>
+          </div>
+          <p><strong>Best/Avg/Worst:</strong> O(n log n) &nbsp; <strong>Stable:</strong> Yes &nbsp; <strong>Extra space:</strong> O(n)</p>
+        </article>
+
+        <article class="card">
+          <span class="pill">QUICK SORT</span>
+          <h3>Partition around a pivot</h3>
+          <p>Choose a pivot, put smaller values on one side and larger values on the other, then recursively sort the partitions.</p>
+          <div class="concept-art">
+            <div class="array">
+              <div class="cell sorted">3</div><div class="cell sorted">1</div><div class="cell active">5</div><div class="cell">8</div><div class="cell">9</div>
+            </div>
+            <p class="tiny" style="text-align:center">Pivot = 5 → smaller ← pivot → larger</p>
+          </div>
+          <p><strong>Best/Avg:</strong> O(n log n) &nbsp; <strong>Worst:</strong> O(n²) &nbsp; <strong>In-place:</strong> Commonly Yes</p>
+        </article>
+
+        <article class="card">
+          <span class="pill">WHY SORT?</span>
+          <h3>Sorting is often a preparation step</h3>
+          <p>Once data is sorted, many later operations become easier: Binary Search, duplicate detection, range queries, median computation and ordered reporting.</p>
+          <div class="callout success">
+            A good algorithm is not simply the one with the smallest Big-O. Consider input size, memory, ordering, stability and whether data is already nearly sorted.
+          </div>
+        </article>
+      </div>
+
+      <div style="margin-top:26px">
+        <h3>C implementations of three basic sorts</h3>
+        <div class="grid grid-3" style="margin-top:14px">
+          <div>
+<pre><code>// Bubble Sort
+for (int i = 0; i &lt; n-1; i++) {
+    int swapped = 0;
+    for (int j = 0; j &lt; n-i-1; j++) {
+        if (a[j] &gt; a[j+1]) {
+            int t = a[j];
+            a[j] = a[j+1];
+            a[j+1] = t;
+            swapped = 1;
+        }
+    }
+    if (!swapped) break;
+}</code></pre>
+          </div>
+          <div>
+<pre><code>// Selection Sort
+for (int i = 0; i &lt; n-1; i++) {
+    int min = i;
+    for (int j = i+1; j &lt; n; j++) {
+        if (a[j] &lt; a[min])
+            min = j;
+    }
+    int t = a[i];
+    a[i] = a[min];
+    a[min] = t;
+}</code></pre>
+          </div>
+          <div>
+<pre><code>// Insertion Sort
+for (int i = 1; i &lt; n; i++) {
+    int key = a[i];
+    int j = i - 1;
+
+    while (j &gt;= 0 && a[j] &gt; key) {
+        a[j+1] = a[j];
+        j--;
+    }
+    a[j+1] = key;
+}</code></pre>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="complexity">
+    <div class="container">
+      <div class="section-head">
+        <span class="pill">PART 3</span>
+        <h2>Complexity at a glance</h2>
+        <p>Big-O describes how an algorithm's work grows as the input size grows. It is especially useful for comparing algorithms for large inputs.</p>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Algorithm</th>
+              <th>Best</th>
+              <th>Average</th>
+              <th>Worst</th>
+              <th>Extra Space</th>
+              <th>Important condition / feature</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>Linear Search</td><td>O(1)</td><td>O(n)</td><td>O(n)</td><td>O(1)</td><td>Works on unsorted data</td></tr>
+            <tr><td>Binary Search</td><td>O(1)</td><td>O(log n)</td><td>O(log n)</td><td>O(1)*</td><td>Requires sorted data</td></tr>
+            <tr><td>Bubble Sort</td><td>O(n)**</td><td>O(n²)</td><td>O(n²)</td><td>O(1)</td><td>Simple, stable</td></tr>
+            <tr><td>Selection Sort</td><td>O(n²)</td><td>O(n²)</td><td>O(n²)</td><td>O(1)</td><td>Few swaps</td></tr>
+            <tr><td>Insertion Sort</td><td>O(n)</td><td>O(n²)</td><td>O(n²)</td><td>O(1)</td><td>Good for small/nearly sorted data</td></tr>
+            <tr><td>Merge Sort</td><td>O(n log n)</td><td>O(n log n)</td><td>O(n log n)</td><td>O(n)</td><td>Stable, predictable performance</td></tr>
+            <tr><td>Quick Sort</td><td>O(n log n)</td><td>O(n log n)</td><td>O(n²)</td><td>O(log n) avg.</td><td>Very fast in practice with good partitioning</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="tiny">*Iterative Binary Search. **Optimized Bubble Sort when no swaps occur.</p>
+
+      <div class="grid grid-2" style="margin-top:24px">
+        <div class="card">
+          <h3>What does O(log n) feel like?</h3>
+          <p>If Binary Search starts with 1,024 sorted items, each comparison halves the remaining search area.</p>
+          <div class="algo-list">
+            <div class="algo-row"><strong>Start</strong><div class="meter"><span style="width:100%"></span></div><span class="tag">1024</span></div>
+            <div class="algo-row"><strong>1 comparison</strong><div class="meter"><span style="width:50%"></span></div><span class="tag">512</span></div>
+            <div class="algo-row"><strong>2 comparisons</strong><div class="meter"><span style="width:25%"></span></div><span class="tag">256</span></div>
+            <div class="algo-row"><strong>10 comparisons</strong><div class="meter"><span style="width:2%"></span></div><span class="tag">≈ 1</span></div>
+          </div>
+        </div>
+        <div class="card">
+          <h3>Stability and in-place sorting</h3>
+          <p><strong>Stable sort:</strong> equal-valued records keep their original relative order.</p>
+          <p><strong>In-place sort:</strong> uses very little extra memory beyond the original array.</p>
+          <div class="callout">
+            Example: If students are first ordered by name and then stably sorted by marks, students with equal marks can retain their previous name ordering.
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="visualizers" style="background:#fff;border-top:1px solid var(--border);border-bottom:1px solid var(--border)">
+    <div class="container">
+      <div class="section-head">
+        <span class="pill">INTERACTIVE</span>
+        <h2>Try the algorithms yourself</h2>
+        <p>Change the target or restart the demonstration. Watching each comparison makes the algorithm much easier to remember.</p>
+      </div>
+
+      <div class="grid grid-2">
+        <div class="card">
+          <h3>Linear Search Visualizer</h3>
+          <div class="visualizer-controls">
+            <label>Target <input id="linearTarget" type="number" value="18"></label>
+            <button class="btn btn-primary" onclick="startLinear()">Start</button>
+            <button class="btn btn-secondary" onclick="resetLinear()">Reset</button>
+          </div>
+          <div id="linearArray" class="array"></div>
+          <div id="linearStatus" class="status">Press Start to search.</div>
+        </div>
+
+        <div class="card">
+          <h3>Binary Search Visualizer</h3>
+          <div class="visualizer-controls">
+            <label>Target <input id="binaryTarget" type="number" value="31"></label>
+            <button class="btn btn-primary" onclick="startBinary()">Start</button>
+            <button class="btn btn-secondary" onclick="resetBinary()">Reset</button>
+          </div>
+          <div id="binaryArray" class="array"></div>
+          <div id="binaryStatus" class="status">Notice that this array is already sorted.</div>
+        </div>
+
+        <div class="card" style="grid-column:1/-1">
+          <h3>Bubble Sort Visualizer</h3>
+          <div class="visualizer-controls">
+            <button class="btn btn-primary" onclick="startBubble()">Start Sorting</button>
+            <button class="btn btn-secondary" onclick="resetBubble()">Reset</button>
+          </div>
+          <div id="bubbleArray" class="array"></div>
+          <div id="bubbleStatus" class="status">Press Start Sorting to watch adjacent comparisons and swaps.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="videos">
+    <div class="container">
+      <div class="section-head">
+        <span class="pill">WATCH &amp; EXPLORE</span>
+        <h2>Video and visual learning resources</h2>
+        <p>Use these after reading the concepts. Try to predict the next step of the algorithm before the instructor or visualizer shows it.</p>
+      </div>
+
+      <div class="grid grid-3">
+        <article class="card video-card">
+          <div class="video-icon">▶</div>
+          <h3>CS50 — Algorithms</h3>
+          <p>Excellent lecture covering searching, Big-O, Linear Search, Binary Search, Selection Sort, Bubble Sort and Merge Sort.</p>
+          <a class="btn btn-primary" target="_blank" rel="noopener" href="https://www.youtube.com/watch?v=yb0PY3LX2x8">Watch on YouTube</a>
+        </article>
+        <article class="card video-card">
+          <div class="video-icon">▶</div>
+          <h3>GeeksforGeeks — Sorting Full Course</h3>
+          <p>A long-form course covering basic and advanced sorting algorithms, including stability, Merge Sort, Quick Sort, Heap Sort and more.</p>
+          <a class="btn btn-primary" target="_blank" rel="noopener" href="https://www.youtube.com/watch?v=IsBMyMch0gw">Watch on YouTube</a>
+        </article>
+        <article class="card video-card">
+          <div class="video-icon">↗</div>
+          <h3>VisuAlgo</h3>
+          <p>Interactive algorithm animations. Useful for watching array operations and sorting behavior at your own pace.</p>
+          <a class="btn btn-secondary" target="_blank" rel="noopener" href="https://visualgo.net/en/sorting">Open Visualizer</a>
+        </article>
+      </div>
+
+      <div class="grid grid-2" style="margin-top:20px">
+        <a class="resource-link" target="_blank" rel="noopener" href="https://www.geeksforgeeks.org/dsa/searching-algorithms/">
+          <span class="brand-mark" style="width:38px;height:38px;font-size:.78rem">S</span>
+          <span><strong>Searching Algorithms — GeeksforGeeks</strong><small>Additional notes and implementations for searching techniques.</small></span>
+        </a>
+        <a class="resource-link" target="_blank" rel="noopener" href="https://www.geeksforgeeks.org/dsa/sorting-algorithms/">
+          <span class="brand-mark" style="width:38px;height:38px;font-size:.78rem">S</span>
+          <span><strong>Sorting Algorithms — GeeksforGeeks</strong><small>Overview and links to comparison-based and non-comparison sorts.</small></span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section id="practice" style="background:#fff;border-top:1px solid var(--border)">
+    <div class="container">
+      <div class="section-head">
+        <span class="pill">CHECK YOUR UNDERSTANDING</span>
+        <h2>Practice questions</h2>
+        <p>Answer these without looking back. Then open the explanation.</p>
+      </div>
+
+      <div class="grid grid-2">
+        <div class="card">
+          <h3>Quick Quiz</h3>
+
+          <p><strong>1. Which search requires sorted data?</strong></p>
+          <button class="quiz-option" onclick="answer(this,false,'q1')">Linear Search</button>
+          <button class="quiz-option" onclick="answer(this,true,'q1')">Binary Search</button>
+          <button class="quiz-option" onclick="answer(this,false,'q1')">Both</button>
+          <div id="q1" class="quiz-result"></div>
+
+          <p style="margin-top:22px"><strong>2. Which algorithm repeatedly compares adjacent elements?</strong></p>
+          <button class="quiz-option" onclick="answer(this,true,'q2')">Bubble Sort</button>
+          <button class="quiz-option" onclick="answer(this,false,'q2')">Selection Sort</button>
+          <button class="quiz-option" onclick="answer(this,false,'q2')">Binary Search</button>
+          <div id="q2" class="quiz-result"></div>
+
+          <p style="margin-top:22px"><strong>3. Merge Sort has worst-case time complexity:</strong></p>
+          <button class="quiz-option" onclick="answer(this,false,'q3')">O(n²)</button>
+          <button class="quiz-option" onclick="answer(this,true,'q3')">O(n log n)</button>
+          <button class="quiz-option" onclick="answer(this,false,'q3')">O(log n)</button>
+          <div id="q3" class="quiz-result"></div>
+        </div>
+
+        <div class="card">
+          <h3>Questions to discuss in class</h3>
+          <details>
+            <summary>Why is Binary Search O(log n)?</summary>
+            <p>Because every comparison removes about half of the remaining search space. The number of halvings required to reduce n elements to one grows logarithmically.</p>
+          </details>
+          <details>
+            <summary>When can Linear Search be a reasonable choice?</summary>
+            <p>When the data is small, unsorted, searched only once, or when sorting would add unnecessary overhead.</p>
+          </details>
+          <details>
+            <summary>Why can Insertion Sort be good for nearly sorted data?</summary>
+            <p>Each new element usually needs only a small number of shifts, so its behavior can approach linear time when the array is already close to sorted.</p>
+          </details>
+          <details>
+            <summary>Why does Merge Sort need extra memory?</summary>
+            <p>The merge step commonly uses temporary storage to combine two sorted subarrays into one sorted sequence.</p>
+          </details>
+          <details>
+            <summary>Why can Quick Sort become O(n²)?</summary>
+            <p>If pivot choices repeatedly produce highly unbalanced partitions—for example, one partition of size n−1 and another of size 0—the recursion behaves poorly.</p>
+          </details>
+        </div>
+      </div>
+
+      <div class="card" style="margin-top:20px">
+        <h3>Programming exercises</h3>
+        <ol>
+          <li>Write Linear Search and count how many comparisons are made before finding the key.</li>
+          <li>Write Binary Search and display <span class="inline-code">low</span>, <span class="inline-code">mid</span>, and <span class="inline-code">high</span> after every iteration.</li>
+          <li>Modify Bubble Sort so that it stops early when no swap happens in a pass.</li>
+          <li>Sort an array using Selection Sort and count the number of swaps.</li>
+          <li>Use Insertion Sort on an already sorted array. Compare the number of operations with a reverse-sorted array.</li>
+          <li>Given a sorted array with duplicates, modify Binary Search to find the first occurrence of a target.</li>
+          <li>Compare Bubble Sort and Merge Sort for 10, 100, 1,000 and 10,000 elements. Record execution time.</li>
+        </ol>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="footer">
+  <div class="container">
+    <h3>DSA Learning Hub — Searching &amp; Sorting</h3>
+    <p>Designed as a classroom companion: understand the idea, trace an example, write the algorithm, analyze the complexity, and then practice.</p>
+    <p class="tiny">
+      External learning resources are linked for educational use. Page content and interactive visualizers are self-contained and can be hosted directly on GitHub Pages.
+    </p>
+  </div>
+</footer>
+
+<script>
+  const sleep = ms => new Promise(r => setTimeout(r, ms));
+
+  // ---------- Linear Search ----------
+  const linearData = [14, 7, 29, 3, 18, 42, 11];
+  let linearRunning = false;
+
+  function renderArray(elId, data) {
+    const el = document.getElementById(elId);
+    el.innerHTML = "";
+    data.forEach((v, i) => {
+      const d = document.createElement("div");
+      d.className = "cell";
+      d.dataset.index = i;
+      d.innerHTML = `${v}<span class="index">${i}</span>`;
+      el.appendChild(d);
+    });
+  }
+
+  function resetLinear() {
+    linearRunning = false;
+    renderArray("linearArray", linearData);
+    document.getElementById("linearStatus").textContent = "Press Start to search.";
+  }
+
+  async function startLinear() {
+    if (linearRunning) return;
+    linearRunning = true;
+    renderArray("linearArray", linearData);
+    const target = Number(document.getElementById("linearTarget").value);
+    const status = document.getElementById("linearStatus");
+    const cells = [...document.querySelectorAll("#linearArray .cell")];
+
+    for (let i = 0; i < linearData.length && linearRunning; i++) {
+      cells.forEach(c => c.classList.remove("active"));
+      cells[i].classList.add("active");
+      status.textContent = `Compare target ${target} with a[${i}] = ${linearData[i]}`;
+      await sleep(650);
+
+      if (linearData[i] === target) {
+        cells[i].classList.remove("active");
+        cells[i].classList.add("found");
+        status.textContent = `Found ${target} at index ${i}.`;
+        linearRunning = false;
+        return;
+      }
+    }
+    if (linearRunning) status.textContent = `${target} is not present in the array.`;
+    linearRunning = false;
+  }
+
+  // ---------- Binary Search ----------
+  const binaryData = [4, 9, 15, 22, 31, 44, 57, 68, 76, 91];
+  let binaryRunning = false;
+
+  function resetBinary() {
+    binaryRunning = false;
+    renderArray("binaryArray", binaryData);
+    document.getElementById("binaryStatus").textContent = "Notice that this array is already sorted.";
+  }
+
+  async function startBinary() {
+    if (binaryRunning) return;
+    binaryRunning = true;
+    renderArray("binaryArray", binaryData);
+    const target = Number(document.getElementById("binaryTarget").value);
+    const cells = [...document.querySelectorAll("#binaryArray .cell")];
+    const status = document.getElementById("binaryStatus");
+    let low = 0, high = binaryData.length - 1;
+
+    while (low <= high && binaryRunning) {
+      cells.forEach((c, i) => {
+        c.className = "cell";
+        if (i < low || i > high) c.classList.add("dim");
+      });
+
+      const mid = Math.floor((low + high) / 2);
+      cells[mid].classList.remove("dim");
+      cells[mid].classList.add("active");
+      status.textContent = `low=${low}, high=${high}, mid=${mid}. Compare ${target} with ${binaryData[mid]}.`;
+      await sleep(850);
+
+      if (binaryData[mid] === target) {
+        cells[mid].className = "cell found";
+        status.textContent = `Found ${target} at index ${mid}.`;
+        binaryRunning = false;
+        return;
+      } else if (binaryData[mid] < target) {
+        low = mid + 1;
+        status.textContent = `${target} is larger than ${binaryData[mid]} → search the right half.`;
+      } else {
+        high = mid - 1;
+        status.textContent = `${target} is smaller than ${binaryData[mid]} → search the left half.`;
+      }
+      await sleep(650);
+    }
+
+    if (binaryRunning) status.textContent = `${target} is not present in the array.`;
+    binaryRunning = false;
+  }
+
+  // ---------- Bubble Sort ----------
+  const bubbleStart = [8, 3, 5, 1, 7, 2];
+  let bubbleData = [...bubbleStart];
+  let bubbleRunning = false;
+
+  function resetBubble() {
+    bubbleRunning = false;
+    bubbleData = [...bubbleStart];
+    renderArray("bubbleArray", bubbleData);
+    document.getElementById("bubbleStatus").textContent = "Press Start Sorting to watch adjacent comparisons and swaps.";
+  }
+
+  async function startBubble() {
+    if (bubbleRunning) return;
+    bubbleRunning = true;
+    bubbleData = [...bubbleStart];
+    renderArray("bubbleArray", bubbleData);
+    const status = document.getElementById("bubbleStatus");
+
+    for (let i = 0; i < bubbleData.length - 1 && bubbleRunning; i++) {
+      let swapped = false;
+      for (let j = 0; j < bubbleData.length - i - 1 && bubbleRunning; j++) {
+        let cells = [...document.querySelectorAll("#bubbleArray .cell")];
+        cells.forEach(c => c.classList.remove("active","swap"));
+        cells[j].classList.add("active");
+        cells[j+1].classList.add("active");
+        status.textContent = `Compare ${bubbleData[j]} and ${bubbleData[j+1]}.`;
+        await sleep(550);
+
+        if (bubbleData[j] > bubbleData[j+1]) {
+          status.textContent = `${bubbleData[j]} > ${bubbleData[j+1]} → swap them.`;
+          [bubbleData[j], bubbleData[j+1]] = [bubbleData[j+1], bubbleData[j]];
+          swapped = true;
+          renderArray("bubbleArray", bubbleData);
+          cells = [...document.querySelectorAll("#bubbleArray .cell")];
+          cells[j].classList.add("swap");
+          cells[j+1].classList.add("swap");
+          await sleep(600);
+        }
+      }
+      const cells = [...document.querySelectorAll("#bubbleArray .cell")];
+      if (cells[bubbleData.length-i-1]) cells[bubbleData.length-i-1].classList.add("sorted");
+      if (!swapped) break;
+    }
+
+    if (bubbleRunning) {
+      const cells = [...document.querySelectorAll("#bubbleArray .cell")];
+      cells.forEach(c => c.className = "cell sorted");
+      status.textContent = "Sorting complete: " + bubbleData.join(", ");
+    }
+    bubbleRunning = false;
+  }
+
+  // ---------- Quiz ----------
+  function answer(button, correct, resultId) {
+    const group = button.parentElement;
+    const buttons = [...group.querySelectorAll(".quiz-option")];
+    const result = document.getElementById(resultId);
+
+    // Only reset buttons associated with this question by walking from clicked button
+    let current = button;
+    const local = [];
+    while (current && current.classList && current.classList.contains("quiz-option")) {
+      local.push(current);
+      current = current.previousElementSibling;
+    }
+    current = button.nextElementSibling;
+    while (current && current.classList && current.classList.contains("quiz-option")) {
+      local.push(current);
+      current = current.nextElementSibling;
+    }
+    local.forEach(b => b.classList.remove("correct","wrong"));
+
+    button.classList.add(correct ? "correct" : "wrong");
+    result.textContent = correct ? "✓ Correct." : "Not quite — try another option.";
+    result.style.color = correct ? "#0f7b59" : "#b23b3b";
+  }
+
+  resetLinear();
+  resetBinary();
+  resetBubble();
+</script>
+</body>
+</html>
